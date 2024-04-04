@@ -1,0 +1,39 @@
+actors = [
+	{
+		enabled = false
+		mass = 1
+		name = "rp_dropped"
+		node = "pRocketLauncher"
+		shapes = [
+			{
+				material = "flesh"
+				shape = "pRocketLauncher"
+				template = "pickup"
+				type = "convex_computed"
+			},
+			{
+				material = "flesh"
+				shape = "pRocketLauncher"
+				template = "pickup_interact_collision_shape"
+				type = "convex_computed"
+			},
+		]
+		template = "projectile"
+	},
+	{
+        enabled = true
+        mass = 1
+        name = "pRocketLauncher"
+        node = "pRocketLauncher"
+        shapes = [
+            {
+                material = "flesh"
+                shape = "pRocketLauncher"
+                template = "enemy_hit_box"
+                type = "convex_computed"
+            }
+        ]
+        template = "keyframed_no_collision"
+    },
+	
+]

@@ -1,0 +1,27 @@
+mod = [
+	"doomrocket"
+]
+
+package = [
+	"resource_packages/doomrocket/doomrocket"
+]
+
+lua = [
+	"scripts/mods/doomrocket/*"
+]
+
+material = [
+  "materials/*"
+]
+
+unit = [
+  "units/*"
+]
+
+texture = [
+  "textures/*"
+] 
+
+// wwise_dep = [
+//   "wwise/*"
+// ]
