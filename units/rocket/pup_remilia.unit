@@ -4,20 +4,20 @@ materials = {
 
 data = {
     unit_template = "interaction_unit"
-	
+
 	mat_slots = {
         slot1 = "remilia",
     }
 	mat_to_use = "units/weapons/player/wpn_emp_sword_02_t1/wpn_emp_sword_02_t1_3p"
-    
+
     colors = {
-        slot1 = "textures/remilia_color"
+        slot1 = "textures/default_col"
     }
     normals = {
-        slot1 = "textures/remilia_normal"
+        slot1 = "textures/default_normal"
     }
 
-    color_slot = "texture_map_c0ba2942" 
+    color_slot = "texture_map_c0ba2942"
     norm_slot = "texture_map_59cd86b9"
 	MAB_slot = "texture_map_0205ba86"
 	emis_col_slot = "texture_map_71d74d4d"
@@ -35,7 +35,7 @@ data = {
             hud_text_line_1 = "LA_loremaster_message_large"
             hud_text_line_2 =  "LA_loremaster_message_large_desc"
             hud_text_line_3 =  "LA_loremaster_message_large_footer"
-            
+
         }
 }
 
@@ -58,4 +58,4 @@ renderables = {
    	surface_queries = false
    	viewport_visible = false
 	}
-}  
+}
