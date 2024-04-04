@@ -1,5 +1,10 @@
 local mod = get_mod("doomrocket")
 
+local math_abs = math.abs
+local math_log = math.log
+local math_ex = math.exp
+local math_pow = math.pow
+
 local function radians_to_quaternion(theta, ro, phi)
     local c1 =  math.cos(theta/2)
     local c2 = math.cos(ro/2)
@@ -15,14 +20,20 @@ local function radians_to_quaternion(theta, ro, phi)
     return rot
 end
 
+local function sign(x)
+    return x>0 and 1 or x<0 and -1 or 0
+end
+
 local magnitude = Vector3.length
 local dot_product = Vector3.dot
 local normalize = Vector3.normal
+local vec_dsit = Vector3.distance
 
 local velocity = Actor.velocity
 local pos_actor = Actor.position
 local rot_actor = Actor.rotation
 local rotate_actor = Actor.teleport_rotation
+local actor_add_vel = Actor.add_velocity
 
 local move_particles = World.move_particles
 local vector4_multi = Quaternion.multiply
@@ -38,23 +49,18 @@ local linear_sphere_sweep = stingray.PhysicsWorld.linear_sphere_sweep
 
 ProjectileRocket = class(ProjectileRocket)
 
-ProjectileRocket.init = function (self, unit, attacker_unit, position, rotation)
+ProjectileRocket.init = function (self, unit, attacker_unit, target_pos)
     Managers.package:load("resource_packages/breeds/skaven_warpfire_thrower", "global")
     self.unit = unit
     local actor = Unit.actor(unit, 0)
     self.actor = actor
-
+    self.target_z = target_pos.z
+    self.target_y = target_pos.y
+    self.target_x = target_pos.x
     self.attacker_unit = attacker_unit
-    -- local vel = velocity(actor)
-    -- local current_direction = vel.x*vel.y*math.abs(vel.z)
-
-    -- mod:echo(vel.x)
-    -- mod:echo(vel.y)
-    -- mod:echo(vel.z)
-    -- mod:echo(current_direction)
-    -- mod:echo("+++++++")
-
-    -- self.current_direction = current_direction/math.abs(current_direction)
+    self.launch_z = Unit.local_position(self.attacker_unit, 0).z
+    self.launch_y = Unit.local_position(self.attacker_unit, 0).y
+    self.launch_x = Unit.local_position(self.attacker_unit, 0).x
 
     self.reached_apogee = false
 
@@ -68,16 +74,14 @@ ProjectileRocket.init = function (self, unit, attacker_unit, position, rotation)
     self.wwise_world = Wwise.wwise_world(self.world)
     self.exhaust_sound_id = WwiseWorld.trigger_event(self.wwise_world, "Play_enemy_warpfire_thrower_shoot",  unit)
 
-    -- World.link_particles(self.world, exhaust_id, unit, 0, Matrix4x4.identity(), "destroy")
-
     self.time_pass = 0
 
 end
 
 ProjectileRocket.update = function (self, dt)
-    -- if not Unit.alive(self.unit) then
-    --     self:destroy()
-    -- end
+    if not Unit.alive(self.unit) then
+        self:destroy()
+    end
 
     local vel = velocity(self.actor)
     local speed = magnitude(vel)
@@ -89,68 +93,54 @@ ProjectileRocket.update = function (self, dt)
         self.current_direction = new_direction
     end
 
-    -- if self.exhaust_id then
-    --     self:move_particles(self.actor)
-    -- end
-
+    self:guide_force(dt)
+    self:straighten_rocket(vel)
     self:move_particles(self.actor)
 
-    -- mod:echo(new_direction)
-    -- mod:echo(self.current_direction)
-    -- if new_direction ~= self.current_direction then
-    --     -- self:destroy()
-    --     if self.reached_apogee then
-    --         if new_direction ~= self.current_direction then
-    --             self:destroy()
-    --         end
-    --     end
-
-    --     self.reached_apogee = true
-
-    --     -- if self.exhaust_id then
-    --     --     World.destroy_particles(world, self.exhaust_id)
-    --     --     self.exhaust_id = nil
-    --     -- end
-
-
-    -- end
-    mod:echo(speed)
-    if speed < 4 then
+    if speed < 3 then
         self:destroy()
     end
 
-    -- local collisions = linear_sphere_sweep(self.physics_world, pos_actor(self.actor), pos_actor(self.actor) + Vector3(0,0,0.1),
-    --                         0.3, 10, "collision_filter", "filter_melee_sweep", "report_initial_overlap")
-    -- if collisions then
-    --     for k,v in pairs(collisions) do
-    --         if type(v) == "table" then
-    --             if v.distance > 1 then
-    --                 self:destroy()
-    --             end
-    --         end
-    --     end
-    -- end
-
-
-    if speed < 1 then
-
-        self:destroy()
-
-    end
-
-    -- self:update_sounds(self.time_pass, self.actor)
-
-    -- self.time_pass = self.time_pass + dt
+    self.time_pass = self.time_pass + dt
     self.current_direction = new_direction
     self.previous_speed = speed
-    self.previous_velocity = vel
 end
 
-ProjectileRocket.straighten_rocket = function(self, unit, actor, direction)
+ProjectileRocket.straighten_rocket = function(self, direction)
     local new_rotation = quat_look(direction)
-    rotate_unit(unit, 0 , new_rotation)
-    rotate_actor(actor, new_rotation)
+    rotate_unit(self.unit, 0 , new_rotation)
+    rotate_actor(self.actor, new_rotation)
 end
+
+ProjectileRocket.guide_force = function(self, dt)
+    local pos = pos_actor(self.actor)
+    local launch_pos = Vector3(self.launch_x, self.launch_y, self.launch_z)
+    local dist_to_target = vec_dsit(Vector3(self.target_x, self.target_y, self.target_z), launch_pos)
+
+    local dirac_delta = math_ex(-500*math_pow(self.time_pass,2)) * 0.1*dist_to_target*math.random()
+    actor_add_vel(self.actor, Vector3(0,0,dirac_delta))
+end
+
+
+-- local math_log = math.log
+-- local math_ex = math.exp
+-- local math_pow = math.pow
+-- local vec_dsit = Vector3.distance
+-- local pos_actor = Actor.position
+-- local actor_add_vel = Actor.add_velocity
+-- mod:hook(ProjectileRocket, 'guide_force', function(func, self, dt)
+--     local pos = pos_actor(self.actor)
+--     local launch_pos = Vector3(self.launch_x, self.launch_y, self.launch_z)
+--     local dist_to_target = vec_dsit(Vector3(self.target_x, self.target_y, self.target_z), launch_pos)
+
+--     local dirac_delta = math_ex(-500*math_pow(self.time_pass,2)) * 0.1*dist_to_target*math.random()
+--     actor_add_vel(self.actor, Vector3(0,0,dirac_delta))
+--     if vec_dsit(Vector3(self.target_x, self.target_y, self.target_z), pos) < 2 then
+--         if math.random() < 0.5 then
+--             self.destroy()
+--         end
+--     end
+-- end)
 
 ProjectileRocket.move_particles = function(self, actor)
     local pos = pos_actor(actor)
@@ -158,20 +148,15 @@ ProjectileRocket.move_particles = function(self, actor)
     move_particles(self.world, self.exhaust_id, pos, rot)
 end
 
-ProjectileRocket.update_sounds = function(self, time, actor)
-    if time > 0.1 then
-        local pos = pos_actor(actor)
-        local rot = vector4_multi(rot_actor(actor), radians_to_quaternion(0,0, math.pi))
-        stop_audio(self.wwise_world, self.exhaust_sound_id)
-        self.exhaust_sound_id = trigger_audio(self.wwise_world, "Play_enemy_warpfire_thrower_shoot",  pos, rot)
+ProjectileRocket.update_sounds = function(self)
+    if self.time_pass > 2 then
+        local pos = pos_actor(self.actor)
+        local rot = vector4_multi(rot_actor(self.actor), radians_to_quaternion(0,0, math.pi))
+        WwiseWorld.stop_event(self.wwise_world, self.exhaust_sound_id)
+        self.exhaust_sound_id = WwiseWorld.trigger_event(self.wwise_world, "Play_enemy_warpfire_thrower_shoot",  pos, rot)
     end
 
 end
-
--- ProjectileRocket.check_for_player = function(self, actor)
-
-
--- end
 
 ProjectileRocket.rocket_explode = function(self)
     local actor = self.actor
@@ -207,8 +192,9 @@ ProjectileRocket.rocket_explode = function(self)
 end
 
 ProjectileRocket.destroy = function(self)
-
-    self:rocket_explode()
+    if Unit.alive(self.unit) then
+        self:rocket_explode()
+    end
 
     mod.projectiles[self.unit] = nil
     self.unit = nil

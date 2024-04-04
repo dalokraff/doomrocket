@@ -50,18 +50,18 @@ mod:dofile("scripts/mods/doomrocket/utils/hooks")
 --setup rocket explosion template
 ExplosionTemplates["doomrocket_explosion"] = {
 	explosion = {
-		radius = 7.5,
+		radius =  5,
 		alert_enemies = true,
-		max_damage_radius = 5,
+		max_damage_radius = 2,
 		always_hurt_players = true,
 		alert_enemies_radius = 15,
 		sound_event_name = "Play_enemy_combat_warpfire_backpack_explode",
 		damage_profile = "warpfire_thrower_explosion",
 		effect_name = "fx/chr_warp_fire_explosion_01",
 		damage_type = "grenade",
-		catapult_force = 15,
+		catapult_force = 10,
 		catapult_players = true,
-		player_push_speed = 20,
+		player_push_speed = 15,
 		difficulty_power_level = {
 			easy = {
 				power_level_glance = 200,
@@ -193,15 +193,6 @@ function mod.update(dt)
 		anim_emitter:update(unit, dt)
 	end
 end
-
-
-
-BEAST_ARMOR = {
-    {
-        target = 0,
-        source = 0,
-   }
-}
 
 mod:dofile("scripts/settings/breeds")
 

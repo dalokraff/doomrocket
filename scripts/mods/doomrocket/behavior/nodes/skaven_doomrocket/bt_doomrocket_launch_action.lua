@@ -612,7 +612,7 @@ BTDoomrocketLaunchAction._shoot = function (self, unit, blackboard, data)
 	local direction_vector = target_vector - start_vector
 	mod:echo(Vector3.length(direction_vector))
 	local direction_unit_vector = direction_vector/Vector3.length(direction_vector)
-	local impulse_vector = direction_unit_vector*17
+	local impulse_vector = direction_unit_vector*10
 
 
 	mod:echo("impulse_vector:	"..tostring(impulse_vector))
@@ -625,7 +625,7 @@ BTDoomrocketLaunchAction._shoot = function (self, unit, blackboard, data)
 	local unit_name = "units/rocket/SM_Rocket"
 
 	local projectile_unit = Managers.state.unit_spawner:spawn_network_unit(unit_name, unit_template_name, extension_init_data, from_position, rotation)
-	mod.projectiles[projectile_unit] = ProjectileRocket:new(projectile_unit, attacker_unit)
+	mod.projectiles[projectile_unit] = ProjectileRocket:new(projectile_unit, attacker_unit, target_vector)
 	local actor = Unit.actor(projectile_unit, 0)
 	Actor.add_velocity(actor, impulse_vector)
 
