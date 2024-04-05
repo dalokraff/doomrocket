@@ -1,0 +1,116 @@
+
+bones = "units/bombadier/bombadier"
+events = {
+	//death = {}
+	doomrocket_reload_loop = {}
+	doomrocket_reload_start = {}
+	//ragdoll = {}
+}
+layers = [
+	{
+		default_state = "base/doomrocket_reload_loop"
+		states = [
+			{
+				animations = [
+					"units/bombadier/animations/doomrocket_reload"
+				]
+				loop_animation = true
+				name = "base/doomrocket_reload_loop"
+				randomization_type = "every_loop"
+				root_driving = "ignore"
+				speed = "1"
+				state_type = "regular"
+				transitions = [
+					{
+						blend_time = 0.5
+						event = "doomrocket_reload_loop"
+						mode = "direct"
+						on_beat = ""
+						to = "base/doomrocket_reload_loop"
+					}
+					{
+						blend_time = 0.5
+						event = "doomrocket_reload_start"
+						mode = "direct"
+						on_beat = ""
+						to = "base/doomrocket_reload_start"
+					}
+					/*{
+						blend_time = 0.2
+						event = "death"
+						mode = "direct"
+						on_beat = ""
+						to = "base/death"
+					}
+					{
+						blend_time = 0.2
+						event = "ragdoll"
+						mode = "direct"
+						on_beat = ""
+						to = "base/death"
+					}*/
+				]
+				weights = [
+					"1.0"
+				]
+			}
+			{
+				animations = [
+					"units/bombadier/animations/doomrocket_reload"
+				]
+				loop_animation = true
+				name = "base/doomrocket_reload_start"
+				randomization_type = "every_loop"
+				root_driving = "ignore"
+				speed = "1"
+				state_type = "regular"
+				transitions = [
+					{
+						blend_time = 0.5
+						event = "doomrocket_reload_loop"
+						mode = "direct"
+						on_beat = ""
+						to = "base/doomrocket_reload_loop"
+					}
+					{
+						blend_time = 0.5
+						event = "doomrocket_reload_start"
+						mode = "direct"
+						on_beat = ""
+						to = "base/doomrocket_reload_start"
+					}
+					/*{
+						blend_time = 0.2
+						event = "death"
+						mode = "direct"
+						on_beat = ""
+						to = "base/death"
+					}
+					{
+						blend_time = 0.2
+						event = "ragdoll"
+						mode = "direct"
+						on_beat = ""
+						to = "base/death"
+					}*/
+				]
+				weights = [
+					"1.0"
+				]
+			}
+		]
+	}
+			
+]
+ragdolls = {
+	ragdoll = {
+		actors = [
+			
+		]
+		keyframed = [
+		]
+	}
+}
+variables = {
+	move_speed = 1
+}

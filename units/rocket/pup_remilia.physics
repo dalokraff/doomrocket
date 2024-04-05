@@ -1,0 +1,90 @@
+actors = [
+	// {
+	// 	enabled = true
+	// 	mass = 1
+	// 	name = "collision"
+	// 	node = "collision"
+	// 	shapes = [
+	// 		{
+	// 			material = "default"
+	// 			shape = "collision"
+	// 			template = "pickup"
+	// 			type = "convex_computed"
+	// 		}
+	// 	]
+	// 	template = "dynamic"
+	// }, 
+	{
+		enabled = true
+		mass = 1
+		name = "remilia"
+		node = "remilia"
+		shapes = [
+			{
+				material = "default"
+				shape = "remilia"
+				template = "pickup_interact_collision_shape"
+				type = "convex_computed"
+			},
+			{
+				material = "default"
+				shape = "remilia"
+				template = "pickup"
+				type = "convex_computed"
+			},
+			{
+				material = "default"
+				shape = "remilia"
+				template = "enemy_interaction"
+				type = "convex_computed"
+			}
+		]
+		template = "projectile"
+	},
+	// {
+	// 	enabled = true
+	// 	mass = 1
+	// 	name = "remilia"
+	// 	node = "remilia"
+	// 	shapes = [
+	// 		{
+	// 			material = "default"
+	// 			shape = "remilia"
+	// 			template = "default"
+	// 			type = "convex_computed"
+	// 		}
+	// 	]
+	// 	template = "dynamic"
+	// },
+	// {
+    //     enabled = true
+    //     mass = 1
+    //     name = "collision"
+    //     node = "collision"
+    //     shapes = [
+    //         {
+    //             material = "default"
+    //             shape = "collision"
+    //             template = "pickup_interact_collision_shape"
+    //             type = "convex_computed"
+    //         }
+    //     ]
+    //     template = "keyframed_no_collision"
+    // },
+	{
+        enabled = true
+        mass = 1
+        name = "remilia"
+        node = "remilia"
+        shapes = [
+            {
+                material = "default"
+                shape = "remilia"
+                template = "default"
+                type = "convex_computed"
+            }
+        ]
+        template = "keyframed_no_collision"
+    },
+	
+]

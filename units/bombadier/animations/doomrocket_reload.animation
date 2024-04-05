@@ -1,0 +1,10 @@
+bones = "units/bombadier/bombadier"
+tolerance = {
+	"" = [
+		0.01
+		0.01
+		0.01
+		false
+		false
+	]
+}
