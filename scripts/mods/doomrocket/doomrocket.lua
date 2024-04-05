@@ -50,9 +50,9 @@ mod:dofile("scripts/mods/doomrocket/utils/hooks")
 --setup rocket explosion template
 ExplosionTemplates["doomrocket_explosion"] = {
 	explosion = {
-		radius =  5,
+		radius =  6,
 		alert_enemies = true,
-		max_damage_radius = 2,
+		max_damage_radius = 1.5,
 		always_hurt_players = true,
 		alert_enemies_radius = 15,
 		sound_event_name = "Play_enemy_combat_warpfire_backpack_explode",
@@ -61,35 +61,37 @@ ExplosionTemplates["doomrocket_explosion"] = {
 		damage_type = "grenade",
 		catapult_force = 10,
 		catapult_players = true,
+		dont_rotate_fx = true,
+		allow_friendly_fire_override = true,
 		player_push_speed = 15,
 		difficulty_power_level = {
 			easy = {
-				power_level_glance = 200,
-				power_level = 400
+				power_level_glance = 400,
+				power_level = 800
 			},
 			normal = {
-				power_level_glance = 200,
-				power_level = 200
+				power_level_glance = 400,
+				power_level = 800
 			},
 			hard = {
 				power_level_glance = 400,
-				power_level = 400
+				power_level = 800
 			},
 			harder = {
-				power_level_glance = 600,
-				power_level = 600
+				power_level_glance = 400,
+				power_level = 800
 			},
 			hardest = {
-				power_level_glance = 800,
+				power_level_glance = 400,
 				power_level = 800
 			},
 			cataclysm = {
-				power_level_glance = 600,
-				power_level = 1200
+				power_level_glance = 400,
+				power_level = 800
 			},
 			cataclysm_2 = {
-				power_level_glance = 800,
-				power_level = 1600
+				power_level_glance = 400,
+				power_level = 800
 			},
 			cataclysm_3 = {
 				power_level_glance = 400,
