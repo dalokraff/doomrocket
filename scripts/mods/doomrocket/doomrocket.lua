@@ -232,3 +232,32 @@ mod:command("doom", "", function()
 	end
 	mod:chat_broadcast("Doom:	"..tostring(mod.doom))
 end)
+
+
+DeathReactions.templates.sm_rocket = {
+	unit = {
+		pre_start = function (unit, context, t, killing_blow)
+			return
+		end,
+		start = function (unit, context, t, killing_blow, is_server)
+			rocket_projectile = mod.projectiles[unit]
+			if rocket_projectile then
+				rocket_projectile:destroy()
+			end
+		end,
+		update = function (unit, dt, context, t, data)
+			return
+		end,
+	},
+	husk = {
+		pre_start = function (unit, context, t, killing_blow)
+			return
+		end,
+		start = function (unit, context, t, killing_blow, is_server)
+
+		end,
+		update = function (unit, dt, context, t, data)
+			return
+		end,
+	},
+}

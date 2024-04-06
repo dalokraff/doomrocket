@@ -621,11 +621,17 @@ BTDoomrocketLaunchAction._shoot = function (self, unit, blackboard, data)
 	local rotation = Unit.local_rotation(unit, 0)
 
 	local attacker_unit = unit
-	local unit_template_name = "interaction_unit"
 	local unit_name = "units/rocket/SM_Rocket"
+
+	local unit_template_name = nil
+	local extension_init_data = {
+		health =  5,
+		damage_cap_per_hit = 10
+	}
 
 	local projectile_unit = Managers.state.unit_spawner:spawn_network_unit(unit_name, unit_template_name, extension_init_data, from_position, rotation)
 	mod.projectiles[projectile_unit] = ProjectileRocket:new(projectile_unit, attacker_unit, target_vector)
+
 	local actor = Unit.actor(projectile_unit, 0)
 	Actor.add_velocity(actor, impulse_vector)
 

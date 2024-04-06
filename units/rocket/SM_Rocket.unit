@@ -3,7 +3,12 @@ materials = {
 }
 
 data = {
-    unit_template = "interaction_unit"
+    unit_template = "destructible_objective_unit"
+    health = 1
+    damage_cap_per_hit = 5
+    hit_reaction = "level_object"
+    death_reaction = "sm_rocket"
+    // death_reaction = "unit"
 
 	mat_slots = {
         slot1 = "lambert1",
@@ -24,19 +29,19 @@ data = {
 	emis_det_slot = "texture_map_ee282ea2"
 
 	interaction_data = {
-            hud_description = "LA_loremaster_message_large"
-            hud_interaction_action = "LA_read_action"
-            camera_interaction_name = "LA_loremaster_message_large"
-            interaction_length = 0
-            interaction_type = "doom_rocket"
-            interactor_animation = "interaction_start"
-            interactor_animation_time_variable = "revive_time"
-            only_once = false
-            hud_text_line_1 = "LA_loremaster_message_large"
-            hud_text_line_2 =  "LA_loremaster_message_large_desc"
-            hud_text_line_3 =  "LA_loremaster_message_large_footer"
+        hud_description = "LA_loremaster_message_large"
+        hud_interaction_action = "LA_read_action"
+        camera_interaction_name = "LA_loremaster_message_large"
+        interaction_length = 0
+        interaction_type = "doom_rocket"
+        interactor_animation = "interaction_start"
+        interactor_animation_time_variable = "revive_time"
+        only_once = false
+        hud_text_line_1 = "LA_loremaster_message_large"
+        hud_text_line_2 =  "LA_loremaster_message_large_desc"
+        hud_text_line_3 =  "LA_loremaster_message_large_footer"
 
-        }
+    }
 }
 
 renderables = {
