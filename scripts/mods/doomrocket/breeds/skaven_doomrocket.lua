@@ -39,6 +39,7 @@ Breeds.skaven_doomrocket.behavior = "skaven_doomrocket"
 Breeds.skaven_doomrocket.threat_value = 7
 Breeds.skaven_doomrocket.rocket_capacity = 3
 Breeds.skaven_doomrocket.default_inventory_template = "doomrocket_inventory"
+Breeds.skaven_doomrocket.death_reaction = "doomrocket"
 
 BreedActions.skaven_doomrocket = table.clone(BreedActions.skaven_ratling_gunner)
 BreedActions.skaven_doomrocket.fire_rocket = table.clone(BreedActions.skaven_doomrocket.shoot_ratling_gun)

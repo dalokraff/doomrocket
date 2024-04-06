@@ -41,6 +41,7 @@ mod:dofile("scripts/mods/doomrocket/behavior/nodes/skaven_doomrocket/bt_doomrock
 mod:dofile("scripts/mods/doomrocket/behavior/nodes/skaven_doomrocket/bt_doomrocket_reload_action")
 mod:dofile("scripts/mods/doomrocket/behavior/nodes/skaven_doomrocket/trees/skaven/skaven_doomrocket_behavior")
 mod:dofile("scripts/mods/doomrocket/extensions/doomrocket_aim_template")
+mod:dofile("scripts/mods/doomrocket/extensions/death_reactions")
 mod:dofile("scripts/mods/doomrocket/utils/hooks")
 -- -- mod:dofile("scripts/managers/conflict_director/conflict_director")
 
@@ -203,61 +204,40 @@ mod:dofile("scripts/mods/doomrocket/utils/action_sweep_rewrite")
 
 mod.doom = false
 mod:command("doom", "", function()
-    if mod.doom then
+	if mod.doom then
+		for setting_name, settings in pairs(SpecialsSettings) do
+			if settings.breeds then
+				for index, breed_name in ipairs(settings.breeds) do
+					if breed_name == "skaven_doomrocket" then
+						settings.breeds[index] = nil
+					end
+				end
+			end
+			if settings.difficulty_overrides then
+				for diff, diff_settings in pairs(settings.difficulty_overrides) do
+					for index, breed_name in ipairs(diff_settings) do
+						if breed_name == "skaven_doomrocket" then
+							diff_settings.breeds[index] = nil
+						end
+					end
+				end
+			end
+		end
 		mod.doom = false
-		for horde_name, horde_data in pairs(HordeCompositionsPacing) do
-			for value, more_data in pairs(horde_data[1]) do
-				if value == "breeds" then
-					local num_breeeds = #more_data
-					more_data[num_breeeds+1] = nil
-					more_data[num_breeeds+2] = nil
-				end
-			end
-		end
-
 	else
-		mod.doom = true
-		for horde_name, horde_data in pairs(HordeCompositionsPacing) do
-			for value, more_data in pairs(horde_data[1]) do
-				if value == "breeds" then
-					local num_breeeds = #more_data
-					more_data[num_breeeds+1] = "skaven_doomrocket"
-					more_data[num_breeeds+2] = {
-						1,
-						3
-					}
+		for setting_name, settings in pairs(SpecialsSettings) do
+			if settings.breeds then
+				settings.breeds[#settings.breeds + 1] = "skaven_doomrocket"
+			end
+			if settings.difficulty_overrides then
+				for diff, diff_settings in pairs(settings.difficulty_overrides) do
+					if diff_settings.breeds then
+						diff_settings.breeds[#diff_settings.breeds + 1] = "skaven_doomrocket"
+					end
 				end
 			end
 		end
+		mod.doom = true
 	end
 	mod:chat_broadcast("Doom:	"..tostring(mod.doom))
 end)
-
-
-DeathReactions.templates.sm_rocket = {
-	unit = {
-		pre_start = function (unit, context, t, killing_blow)
-			return
-		end,
-		start = function (unit, context, t, killing_blow, is_server)
-			rocket_projectile = mod.projectiles[unit]
-			if rocket_projectile then
-				rocket_projectile:destroy()
-			end
-		end,
-		update = function (unit, dt, context, t, data)
-			return
-		end,
-	},
-	husk = {
-		pre_start = function (unit, context, t, killing_blow)
-			return
-		end,
-		start = function (unit, context, t, killing_blow, is_server)
-
-		end,
-		update = function (unit, dt, context, t, data)
-			return
-		end,
-	},
-}

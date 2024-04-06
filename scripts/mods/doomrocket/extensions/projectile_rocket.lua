@@ -117,7 +117,7 @@ ProjectileRocket.guide_force = function(self, dt)
     local launch_pos = Vector3(self.launch_x, self.launch_y, self.launch_z)
     local dist_to_target = vec_dsit(Vector3(self.target_x, self.target_y, self.target_z), launch_pos)
 
-    local dirac_delta = math_ex(-500*math_pow(self.time_pass,2)) * 0.1*dist_to_target*math.random()
+    local dirac_delta = math_ex(-500*math_pow(self.time_pass,2)) * 0.1*dist_to_target*math.random(0.75, 1)
     actor_add_vel(self.actor, Vector3(0,0,dirac_delta))
 end
 
@@ -133,13 +133,8 @@ end
 --     local launch_pos = Vector3(self.launch_x, self.launch_y, self.launch_z)
 --     local dist_to_target = vec_dsit(Vector3(self.target_x, self.target_y, self.target_z), launch_pos)
 
---     local dirac_delta = math_ex(-500*math_pow(self.time_pass,2)) * 0.1*dist_to_target*math.random()
+--     local dirac_delta = math_ex(-500*math_pow(self.time_pass,2)) * 0.1*dist_to_target*math.random(0.75, 1)
 --     actor_add_vel(self.actor, Vector3(0,0,dirac_delta))
---     if vec_dsit(Vector3(self.target_x, self.target_y, self.target_z), pos) < 2 then
---         if math.random() < 0.5 then
---             self.destroy()
---         end
---     end
 -- end)
 
 ProjectileRocket.move_particles = function(self, actor)
@@ -166,7 +161,7 @@ ProjectileRocket.rocket_explode = function(self)
     local explosion_template_name = "doomrocket_explosion"
     local explosion_template_id = NetworkLookup.explosion_templates[explosion_template_name]
     local explosion_template = ExplosionTemplates[explosion_template_name]
-    local damage_source = "buff"
+    local damage_source = "skaven_doomrocket"
     local damage_source_id = NetworkLookup.damage_sources[damage_source]
     local is_husk = true
     local power_level = 1000
