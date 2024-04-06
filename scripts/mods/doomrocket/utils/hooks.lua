@@ -5,7 +5,7 @@ local new_packages = {
 }
 local pacakge_tisch = {}
 
-for k,v in ipairs(new_packages) do 
+for k,v in ipairs(new_packages) do
     pacakge_tisch[v] = v
 end
 
@@ -16,7 +16,7 @@ mod:hook(PackageManager, "load",
         func(self, package_name, reference_name, callback, asynchronous,
              prioritize)
     end
-	
+
 end)
 
 mod:hook(PackageManager, "unload",
@@ -24,7 +24,7 @@ mod:hook(PackageManager, "unload",
     if package_name ~= pacakge_tisch[package_name] then
         func(self, package_name, reference_name)
     end
-	
+
 end)
 
 mod:hook(PackageManager, "has_loaded",
@@ -32,14 +32,14 @@ mod:hook(PackageManager, "has_loaded",
     if package == pacakge_tisch[package] then
         return true
     end
-	
+
     return func(self, package, reference_name)
 end)
 
 
 
 -- mod:hook(MatchmakingManager, "update", function(func, self, dt, ...)
-    
+
 --     for k,v in pairs(BLACKBOARDS) do
 --         if v.breed.name == "skaven_doomrocket" then
 
@@ -87,7 +87,7 @@ local new_breeds = {
     "skaven_doomrocket",
 }
 local breeds_to_force_spawn = {}
-for k,v in ipairs(new_breeds) do 
+for k,v in ipairs(new_breeds) do
     breeds_to_force_spawn[v] = v
 end
 
@@ -175,9 +175,9 @@ mod:hook(StatisticsDatabase,"modify_stat_by_amount", function (func, self, id, .
         end
 		stat = stat[arg_value]
 	end
-    
 
-    
+
+
     if stat == nil then
         stat = self.statistics[id]
     end
@@ -236,7 +236,7 @@ local new_animations = {
 
 mod:hook(BTSpawningAction, "leave", function(func, self, unit, blackboard, ...)
     local name = blackboard.breed.name
-    
+
     if name == "skaven_doomrocket" then
         mod:echo(name)
 
@@ -328,14 +328,6 @@ mod:hook(AIInventoryExtension, "_setup_configuration", function (func, self, uni
 			Unit.disable_animation_state_machine(outfit_unit)
 		end
 	end
-
-	return result
-end)
-
-mod:hook(AIInventoryExtension, "init", function (func, self, unit, extension_init_data)
-	mod:echo(extension_init_data.inventory_template)
-	
-	local result = func(self, unit, extension_init_data)
 
 	return result
 end)

@@ -27,13 +27,13 @@ InteractionDefinitions.doom_rocket.server.stop = function (world, interactor_uni
 end
 
 InteractionDefinitions.doom_rocket.client.can_interact = function (interactor_unit, interactable_unit, data, config)
-    
+
     -- return (Unit.alive(interactable_unit) and Unit.alive(interactor_unit))
     return false
 end
 
 InteractionDefinitions.doom_rocket.server.can_interact = function (interactor_unit, interactable_unit)
- 
+
     -- return (Unit.alive(interactable_unit) and Unit.alive(interactor_unit))
     return false
 end
@@ -43,7 +43,7 @@ InteractionDefinitions.doom_rocket.client.stop = function (world, interactor_uni
 
 	if result == InteractionResult.SUCCESS and not data.is_husk then
 	    if interactable_unit then
-            mod:echo("boom")
+            print("boom")
         end
 
 	end
@@ -54,7 +54,7 @@ InteractionDefinitions.doom_rocket.replacement_rpc = function(interactable_unit)
     if interactable_unit then
         mod.interactable_unit = interactable_unit
         mod:handle_transition("open_quest_board_letter_view")
-        return true  
+        return true
     end
 end
 
