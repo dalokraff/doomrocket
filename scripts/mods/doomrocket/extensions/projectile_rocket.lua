@@ -52,7 +52,7 @@ ProjectileRocket = class(ProjectileRocket)
 ProjectileRocket.init = function (self, unit, attacker_unit, target_pos)
     Managers.package:load("resource_packages/breeds/skaven_warpfire_thrower", "global")
     self.unit = unit
-    local actor = Unit.actor(unit, 0)
+    local actor = Unit.actor(unit, "throw")
     self.actor = actor
     self.target_z = target_pos.z
     self.target_y = target_pos.y
@@ -93,13 +93,13 @@ ProjectileRocket.update = function (self, dt)
         self.current_direction = new_direction
     end
 
-    self:guide_force(dt)
+    -- self:guide_force(dt)
     self:straighten_rocket(vel)
     self:move_particles(self.actor)
 
-    if speed < 3 then
-        self:destroy()
-    end
+    -- if speed < 3 then
+    --     self:destroy()
+    -- end
 
     self.time_pass = self.time_pass + dt
     self.current_direction = new_direction
@@ -178,17 +178,19 @@ ProjectileRocket.rocket_explode = function(self)
 		Managers.state.unit_spawner:mark_for_deletion(self.unit)
 	end
 
-    if self.exhaust_id then
-        World.destroy_particles(world, self.exhaust_id)
-    end
-    WwiseWorld.stop_event(self.wwise_world, self.exhaust_sound_id)
-
     return
 end
 
 ProjectileRocket.destroy = function(self)
-    if Unit.alive(self.unit) then
-        self:rocket_explode()
+    -- if Unit.alive(self.unit) then
+    --     self:rocket_explode()
+    -- end
+
+    if self.exhaust_id then
+        World.destroy_particles(self.world, self.exhaust_id)
+    end
+    if self.exhaust_sound_id then
+        WwiseWorld.stop_event(self.wwise_world, self.exhaust_sound_id)
     end
 
     mod.projectiles[self.unit] = nil

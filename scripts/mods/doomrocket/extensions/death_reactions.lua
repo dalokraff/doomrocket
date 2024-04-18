@@ -535,10 +535,27 @@ DeathReactions.templates.sm_rocket = {
 			return
 		end,
 		start = function (unit, context, t, killing_blow, is_server)
-			rocket_projectile = mod.projectiles[unit]
-			if rocket_projectile then
-				rocket_projectile:destroy()
+			local actor = Unit.actor(unit, 'throw')
+			local position = Actor.position(actor)
+			local rotation = Actor.rotation(actor)
+
+			local attacker_unit_id = Unit.get_data(unit, "attacker_unit_id")
+			local explosion_template_name = "doomrocket_explosion"
+			local explosion_template_id = NetworkLookup.explosion_templates[explosion_template_name]
+			local explosion_template = ExplosionTemplates[explosion_template_name]
+			local damage_source = "skaven_doomrocket"
+			local damage_source_id = NetworkLookup.damage_sources[damage_source]
+			local power_level = 1000
+
+			if is_server then
+				Managers.state.network.network_transmit:send_rpc_clients("rpc_create_explosion", attacker_unit_id, false,
+					position, rotation, explosion_template_id, 1, damage_source_id, power_level, false, attacker_unit_id)
+				Managers.state.network.network_transmit:send_rpc_server("rpc_create_explosion", attacker_unit_id, false,
+					position, rotation, explosion_template_id, 1, damage_source_id, power_level, false, attacker_unit_id)
 			end
+
+			local unit_spawner = Managers.state.unit_spawner
+			unit_spawner:mark_for_deletion(unit)
 		end,
 		update = function (unit, dt, context, t, data)
 			return

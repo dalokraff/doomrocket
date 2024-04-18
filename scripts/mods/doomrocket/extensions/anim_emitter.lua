@@ -20,9 +20,9 @@ local magnitude = Vector3.length
 
 AnimEmitter = class(AnimEmitter)
 
-AnimEmitter.init = function (self, unit, blackboard)
+AnimEmitter.init = function (self, unit)
     self.unit = unit
-    self.bb = blackboard 
+    self.bb = blackboard
     if blackboard then
         self.current_health = blackboard.current_health_percent
     end
@@ -50,25 +50,30 @@ end
 
 AnimEmitter.emit_event = function(self)
     local emitted_event = self.current_animation.emitted_event
-    self.bb[emitted_event] = true
+    if Managers.player.is_server then
+        if emitted_event then
+            self.bb[emitted_event] = true
+        end
+    end
     self.current_animation = nil
     self.wait_time = 99999
     return
 end
 
+AnimEmitter.set_blackboard = function(self, blackboard)
+    self.bb = blackboard
+end
+
 AnimEmitter.update = function (self, unit, dt)
     self.current_time = self.current_time + dt
-
     if not Unit.alive(unit) then
         self:destroy(unit)
         return
     end
-   
+
     if (self.current_time > self.wait_time) and self.current_animation then
        self:emit_event()
     end
-
-    
 end
 
 
@@ -76,7 +81,7 @@ end
 AnimEmitter.destroy = function(self, unit)
     mod.anim_emitters[unit] = nil
     self.unit = nil
-    self.bb = nil
+    -- self.bb = nil
     self.current_animation = nil
     self.current_time = nil
     self.wait_time = nil

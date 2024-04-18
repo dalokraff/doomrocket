@@ -610,12 +610,8 @@ BTDoomrocketLaunchAction._shoot = function (self, unit, blackboard, data)
 	local start_vector = from_position
 
 	local direction_vector = target_vector - start_vector
-	mod:echo(Vector3.length(direction_vector))
 	local direction_unit_vector = direction_vector/Vector3.length(direction_vector)
-	local impulse_vector = direction_unit_vector*10
-
-
-	mod:echo("impulse_vector:	"..tostring(impulse_vector))
+	local impulse_vector = direction_unit_vector*20
 
 	Unit.set_mesh_visibility(data.ratling_gun_unit, "pRocket", false, "default")
 	local rotation = Unit.local_rotation(unit, 0)
@@ -623,17 +619,44 @@ BTDoomrocketLaunchAction._shoot = function (self, unit, blackboard, data)
 	local attacker_unit = unit
 	local unit_name = "units/rocket/SM_Rocket"
 
-	local unit_template_name = nil
+	local unit_template_name = "explosive_pickup_projectile_unit"
+
+	local rot_x, rot_y, rot_z, rot_w = Quaternion.to_elements(rotation)
+	local owner_unit_id = Managers.state.unit_storage:go_id(unit)
+	local explosion_data = {
+		explode_time = 0,
+		fuse_time = 0,
+		attacker_unit_id = owner_unit_id,
+	}
+	local level = LevelHelper:current_level(blackboard.world)
+
+	local network_position = AiAnimUtils.position_network_scale(from_position, true)
+	local network_rotation = AiAnimUtils.rotation_network_scale(rotation, true)
+	local network_velocity = AiAnimUtils.velocity_network_scale(impulse_vector, true)
+
 	local extension_init_data = {
-		health =  5,
-		damage_cap_per_hit = 10
+		projectile_locomotion_system = {
+			network_position = network_position,
+			network_rotation = network_rotation,
+			network_velocity = network_velocity,
+			network_angular_velocity = {network_velocity[1], network_velocity[2], 0}
+		},
+		pickup_system = {
+			pickup_name = "explosive_barrel",
+			has_physics = true,
+			spawn_type = "thrown",
+		},
+		death_system = {
+			in_hand = false,
+			item_name = "explosive_barrel",
+		},
 	}
 
 	local projectile_unit = Managers.state.unit_spawner:spawn_network_unit(unit_name, unit_template_name, extension_init_data, from_position, rotation)
 	mod.projectiles[projectile_unit] = ProjectileRocket:new(projectile_unit, attacker_unit, target_vector)
 
-	local actor = Unit.actor(projectile_unit, 0)
-	Actor.add_velocity(actor, impulse_vector)
+	--for letting the rocket do damage
+	Unit.set_data(projectile_unit, 'attacker_unit_id', Managers.state.unit_storage:go_id(unit))
 
 end
 
@@ -652,14 +675,3 @@ BTDoomrocketLaunchAction._create_bot_threat_box = function (self, unit, attack_d
 end
 
 return
-
-
--- local player = Managers.player:local_player()
--- local player_unit = player.player_unit
--- local position = Unit.local_position(player_unit, 0)
--- -- mod:echo(position)
--- local rotation = Unit.local_rotation(player_unit, 0)
--- local unit_name = "units/Plane"
--- local unit = Managers.state.unit_spawner:spawn_local_unit(unit_name, position)
--- local actor = Unit.actor(unit, 0)
--- Actor.add_impulse(actor, Vector3(10, 0, 5))

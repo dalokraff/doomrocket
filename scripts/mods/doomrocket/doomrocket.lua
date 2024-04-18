@@ -135,10 +135,6 @@ local num_breeeds = #NetworkLookup.breeds
 NetworkLookup.breeds[num_breeeds + 1] = "skaven_doomrocket"
 NetworkLookup.breeds["skaven_doomrocket"] = num_breeeds + 1
 
--- for k,v in pairs(NetworkLookup.breeds) do
--- 	mod:echo(k.."	"..tostring(v))
--- end
-
 local num_dam = #NetworkLookup.damage_sources + 1
 NetworkLookup.damage_sources["skaven_doomrocket"] = num_dam
 NetworkLookup.damage_sources[num_dam] = "skaven_doomrocket"
@@ -164,7 +160,109 @@ if spawn_mod then
 		table.insert(spawn_mod["all_units"], breed_name)
 	end
 end
-mod:echo("done")
+
+
+local spawn_mod = get_mod("CreatureSpawner")
+new_breed_names = {
+    'chaos_bulwark',
+}
+if spawn_mod then
+	for i,breed_name in ipairs(new_breed_names) do
+		table.insert(spawn_mod["all_units"], breed_name)
+	end
+end
+
+
+-- "units/beings/enemies/chaos_warrior/chr_chaos_warrior"
+-- "units/beings/enemies/chaos_warrior_bulwark/chr_chaos_warrior_bulwark"
+-- "resource_packages/breeds/chaos_zombie"
+
+-- Managers.package:load("resource_packages/breeds/chaos_zombie", "global")
+
+-- local world = Managers.world:world("level_world")
+-- local player = Managers.player:local_player()
+-- local player_unit = player.player_unit
+-- local position = Unit.local_position(player_unit, 0)
+-- local rotation = Unit.local_rotation(player_unit, 0)
+-- local unit_1 = Managers.state.unit_spawner:spawn_local_unit("units/beings/enemies/chaos_warrior_bulwark/chr_chaos_warrior_bulwark", position, rotation)
+-- local unit_2 = Managers.state.unit_spawner:spawn_local_unit("units/beings/enemies/chaos_warrior/chr_chaos_warrior", position, rotation)
+-- Unit.disable_animation_state_machine(unit_2)
+-- local bones_1 = Unit.bones(unit_1)
+-- local bones_2 = Unit.bones(unit_2)
+-- AttachmentNodeLinking.cw_to_cw = {}
+-- for index, bone in ipairs(bones_1) do
+-- 	AttachmentNodeLinking.cw_to_cw[index] = {
+-- 		target = bone,
+-- 		source = bones_2[index]
+-- 	}
+-- end
+-- Unit.set_unit_visibility(unit_1, false)
+-- AttachmentUtils.link(world, unit_1, unit_2, AttachmentNodeLinking.cw_to_cw)
+
+-- local num_mesh = Unit.num_meshes(unit_1)
+-- print(num_mesh)
+-- Unit.set_mesh_visibility(unit_2, 1, false, "default") -- close lod of right shoulder shield thingy
+-- Unit.set_mesh_visibility(unit_2, 2, false, "default") -- lod of left shoulder fly
+-- Unit.set_mesh_visibility(unit_2, 3, false, "default") -- lod of left shoulder fly
+-- Unit.set_mesh_visibility(unit_2, 4, false, "default") -- far lod of nurgle chest symbol
+-- Unit.set_mesh_visibility(unit_2, 5, false, "default") -- close lod of nurgle chest symbol
+-- -- Unit.set_mesh_visibility(unit_2, 6, false, "default")
+-- -- Unit.set_mesh_visibility(unit_2, 7, false, "default")
+-- -- Unit.set_mesh_visibility(unit_2, 8, false, "default")
+-- -- Unit.set_mesh_visibility(unit_2, 9, false, "default")
+-- -- Unit.set_mesh_visibility(unit_2, 10, false, "default")
+-- -- Unit.set_mesh_visibility(unit_2, 11, false, "default")
+-- Unit.set_mesh_visibility(unit_2, 12, false, "default") --  lod of mushrooms
+-- -- Unit.set_mesh_visibility(unit_2, 13, false, "default")
+-- -- Unit.set_mesh_visibility(unit_2, 14, false, "default")
+-- -- Unit.set_mesh_visibility(unit_2, 15, false, "default")
+-- -- Unit.set_mesh_visibility(unit_2, 17, false, "default")
+-- -- Unit.set_mesh_visibility(unit_2, 18, false, "default")
+-- Unit.set_mesh_visibility(unit_2, 0, false, "default") -- far lod of right shoulder shield thingy
+
+-- local hat_unit = Managers.state.unit_spawner:spawn_local_unit("units/beings/enemies/addons/chaos_marauder/moc_helmet_04/moc_helmet_04_b", position, rotation)
+-- AttachmentUtils.link(world, unit_1, hat_unit, AttachmentNodeLinking.ai_helmet)
+-- Unit.set_local_scale(hat_unit,0,  Vector3(1.25, 1.25, 1.25))
+
+-- local hat_unit = Managers.state.unit_spawner:spawn_local_unit( "units/beings/critters/chr_critter_nurgling/chr_critter_nurgling_horn_04", position, rotation)
+-- AttachmentUtils.link(world, unit_1, hat_unit, AttachmentNodeLinking.ai_helmet)
+-- Unit.set_local_scale(hat_unit, 0,  Vector3(1.25, 1.25, 1.25))
+
+-- Unit.set_local_scale(unit_1, 0,  Vector3(0.75, 0.75, 0.75))
+
+
+
+-- mod:command('cw_anim', '', function(state)
+-- 	local world = Managers.world:world("level_world")
+-- 	local player = Managers.player:local_player()
+-- 	local player_unit = player.player_unit
+-- 	local position = Unit.local_position(player_unit, 0)
+-- 	local rotation = Unit.local_rotation(player_unit, 0)
+-- 	local unit_1 = Managers.state.unit_spawner:spawn_local_unit("units/beings/enemies/skaven_rat_ogre/chr_skaven_rat_ogre", position, rotation)
+-- 	BLACKBOARDS[unit_1] = {
+-- 		attacks_done = 0,
+
+-- 	}
+-- 	mod.unit = unit_1
+-- 	Unit.animation_set_state(unit_1, state)
+-- end)
+
+-- mod:hook(ScriptUnit, 'extension', function(func, unit, system_name)
+-- 	if system_name == "ai_system" then
+-- 		if mod.unit == unit then
+-- 			return_val = {
+-- 				blackboard = function(self)
+-- 					return BLACKBOARDS[mod.unit]
+-- 				end
+-- 			}
+-- 			return return_val
+-- 		end
+-- 	end
+
+-- 	return func(unit, system_name)
+-- end)
+
+
 
 for bt_name, bt_node in pairs(BreedBehaviors) do
     bt_node[1] = "BTSelector_" .. bt_name

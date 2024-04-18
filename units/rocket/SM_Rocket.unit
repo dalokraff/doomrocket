@@ -3,12 +3,13 @@ materials = {
 }
 
 data = {
-    unit_template = "destructible_objective_unit"
+    unit_template = "explosive_pickup_projectile_unit"
     health = 1
     damage_cap_per_hit = 5
     hit_reaction = "level_object"
     death_reaction = "sm_rocket"
-    // death_reaction = "unit"
+    in_hand = false
+    fuse_time = 0.1
 
 	mat_slots = {
         slot1 = "lambert1",

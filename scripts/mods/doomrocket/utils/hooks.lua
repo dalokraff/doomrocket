@@ -238,14 +238,25 @@ mod:hook(BTSpawningAction, "leave", function(func, self, unit, blackboard, ...)
     local name = blackboard.breed.name
 
     if name == "skaven_doomrocket" then
-        mod:echo(name)
+		if mod.anim_emitters[unit] then
+			mod.anim_emitters[unit]:set_blackboard(blackboard)
+		end
+    end
 
+    return func(self, unit, blackboard, ...)
+end)
+
+mod:hook(UnitSpawner, "spawn_local_unit", function(func, self, unit_name, position, rotation, material)
+
+	local unit = func(self, unit_name, position, rotation, material)
+
+	if unit_name == "units/beings/enemies/skaven_ratlinggunner/chr_skaven_ratlinggunner" then
 		for animaiton_event, details in pairs(new_animations) do
 			Unit.set_data(unit, animaiton_event, "timing", details.timing)
 			Unit.set_data(unit, animaiton_event, "emitted_event", details.emitted_event)
 		end
 
-		mod.anim_emitters[unit] = AnimEmitter:new(unit, blackboard)
+		mod.anim_emitters[unit] = AnimEmitter:new(unit)
 
         Unit.set_mesh_visibility(unit, 0, false, "default")--far tank LOD
         Unit.set_mesh_visibility(unit, 4, false, "default") --far belt LOD
@@ -255,8 +266,9 @@ mod:hook(BTSpawningAction, "leave", function(func, self, unit, blackboard, ...)
         Unit.set_mesh_visibility(unit, 11, false, "default")--close tank LOD gunner
         Unit.set_mesh_visibility(unit, 12, false, "default")--close tank glow LOD gunner
         Unit.set_mesh_visibility(unit, 16, false, "default")--close belt LOD gunner
-    end
-    return func(self, unit, blackboard, ...)
+	end
+
+	return unit
 end)
 
 

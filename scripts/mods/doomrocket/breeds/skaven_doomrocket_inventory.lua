@@ -425,7 +425,7 @@ InventoryConfigurations['doomrocket_inventory'] = {
         -- bloodletter_heads,
         rocket_glaives,
         -- bloodletter_outfits,
-        
+
 	},
     items_n = 3
 }
@@ -433,39 +433,13 @@ InventoryConfigurations['doomrocket_inventory'] = {
 InventoryConfigurations['warlock_engineer'] = {
     enemy_hit_sound = "spear",
 	anim_state_event = "idle",
-	multiple_configurations = { 
+	multiple_configurations = {
         "doomrocket_inventory",
         -- "ratlinggun",
         -- "halberd",
     },
     items_n = 1
 }
-
-
--- local configs = InventoryConfigurations["ratlinggun"]
--- local items = configs.items
--- local items_n = configs.items_n
--- local index = 0
--- for i = 1, items_n, 1 do
---     index = index + 1
---     local item_category = items[i]
---     local item_category_n = item_category.count
---     local item_category_name = item_category.name
---     local item_index = math.random(1, item_category_n)
---     local item = item_category[item_index]
---     local item_unit_name = item.unit_name
---     local item_unit_template_name = item.unit_extension_template or "ai_inventory_item"
---     local item_flow_event = item.flow_event
-
---     mod:echo(item_category)
---     mod:echo(item_category_n)
---     mod:echo(item_category_name)
---     mod:echo(item_index)
---     mod:echo(item)
---     mod:echo(item_unit_name)
---     mod:echo(item_unit_template_name)
---     mod:echo(item_flow_event)
--- end
 
 local new_configs = {
     doomrocket_inventory = InventoryConfigurations['doomrocket_inventory'],

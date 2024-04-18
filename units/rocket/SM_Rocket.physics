@@ -1,7 +1,7 @@
 actors = [
 	{
 		enabled = true
-		mass = 1
+		mass = 0.1
 		name = "rp_dropped"
 		node = "pRocket"
 		shapes = [
@@ -14,7 +14,7 @@ actors = [
 			{
 				material = "default"
 				shape = "pRocket"
-				template = "pickup"
+				template = "projectile_physics"
 				type = "convex_computed"
 			},
 		]
@@ -22,7 +22,7 @@ actors = [
 	},
 	{
         enabled = true
-        mass = 1
+        mass = 0.1
         name = "pRocket"
         node = "pRocket"
         shapes = [
@@ -35,5 +35,25 @@ actors = [
         ]
         template = "keyframed_no_collision"
     },
-	
+	{
+		enabled = false
+		mass = 0.1
+		name = "throw"
+		node = "pRocket"
+		shapes = [
+			{
+				material = "default"
+				shape = "pRocket"
+				template = "pickup_interact_collision_shape"
+				type = "convex_computed"
+			},
+			{
+				material = "default"
+				shape = "pRocket"
+				template = "projectile_physics"
+				type = "convex_computed"
+			},
+		]
+		template = "projectile"
+	},
 ]
