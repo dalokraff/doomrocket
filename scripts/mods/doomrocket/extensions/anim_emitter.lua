@@ -22,10 +22,10 @@ AnimEmitter = class(AnimEmitter)
 
 AnimEmitter.init = function (self, unit, blackboard)
     self.unit = unit
-    self.bb = blackboard 
-    if blackboard then
-        self.current_health = blackboard.current_health_percent
-    end
+    self.bb = blackboard
+    -- if blackboard and is_server then
+    --     self.current_health = blackboard.current_health_percent
+    -- end
     self.current_animation = {}
 
     self.current_time = 0
@@ -50,7 +50,9 @@ end
 
 AnimEmitter.emit_event = function(self)
     local emitted_event = self.current_animation.emitted_event
-    self.bb[emitted_event] = true
+    if self.bb then
+        self.bb[emitted_event] = true
+    end
     self.current_animation = nil
     self.wait_time = 99999
     return
@@ -63,12 +65,18 @@ AnimEmitter.update = function (self, unit, dt)
         self:destroy(unit)
         return
     end
-   
+
     if (self.current_time > self.wait_time) and self.current_animation then
        self:emit_event()
     end
 
-    
+    if BLACKBOARDS[unit] then
+        if not self.bb then
+            self.bb = BLACKBOARDS[unit]
+        end
+    end
+
+
 end
 
 

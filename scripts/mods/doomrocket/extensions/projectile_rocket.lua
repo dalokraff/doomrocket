@@ -97,7 +97,7 @@ ProjectileRocket.update = function (self, dt)
     self:straighten_rocket(vel)
     self:move_particles(self.actor)
 
-    if speed < 3 then
+    if speed < 4 then
         self:destroy()
     end
 
@@ -120,22 +120,6 @@ ProjectileRocket.guide_force = function(self, dt)
     local dirac_delta = math_ex(-500*math_pow(self.time_pass,2)) * 0.1*dist_to_target*math.random(0.75, 1)
     actor_add_vel(self.actor, Vector3(0,0,dirac_delta))
 end
-
-
--- local math_log = math.log
--- local math_ex = math.exp
--- local math_pow = math.pow
--- local vec_dsit = Vector3.distance
--- local pos_actor = Actor.position
--- local actor_add_vel = Actor.add_velocity
--- mod:hook(ProjectileRocket, 'guide_force', function(func, self, dt)
---     local pos = pos_actor(self.actor)
---     local launch_pos = Vector3(self.launch_x, self.launch_y, self.launch_z)
---     local dist_to_target = vec_dsit(Vector3(self.target_x, self.target_y, self.target_z), launch_pos)
-
---     local dirac_delta = math_ex(-500*math_pow(self.time_pass,2)) * 0.1*dist_to_target*math.random(0.75, 1)
---     actor_add_vel(self.actor, Vector3(0,0,dirac_delta))
--- end)
 
 ProjectileRocket.move_particles = function(self, actor)
     local pos = pos_actor(actor)

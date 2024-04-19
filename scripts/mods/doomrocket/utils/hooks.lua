@@ -226,7 +226,6 @@ end)
 
 
 
-
 local new_animations = {
 	doomrocket_reload_start = {
 		timing = 0.5,
@@ -234,29 +233,36 @@ local new_animations = {
 	},
 }
 
-mod:hook(BTSpawningAction, "leave", function(func, self, unit, blackboard, ...)
-    local name = blackboard.breed.name
+mod:hook(UnitSpawner, "create_unit_extensions", function(func, self, world, unit, unit_template_name, extension_init_data)
 
-    if name == "skaven_doomrocket" then
-        mod:echo(name)
+	if extension_init_data then
+		if extension_init_data.locomotion_system then
+			if extension_init_data.locomotion_system.breed then
+				if extension_init_data.locomotion_system.breed.name == "skaven_doomrocket" then
+					mod:echo(extension_init_data.locomotion_system.breed.name)
+					if Unit.alive(unit) then
+						for animaiton_event, details in pairs(new_animations) do
+							Unit.set_data(unit, animaiton_event, "timing", details.timing)
+							Unit.set_data(unit, animaiton_event, "emitted_event", details.emitted_event)
+						end
 
-		for animaiton_event, details in pairs(new_animations) do
-			Unit.set_data(unit, animaiton_event, "timing", details.timing)
-			Unit.set_data(unit, animaiton_event, "emitted_event", details.emitted_event)
+						mod.anim_emitters[unit] = AnimEmitter:new(unit, blackboard)
+
+						Unit.set_mesh_visibility(unit, 0, false, "default")--far tank LOD
+						Unit.set_mesh_visibility(unit, 4, false, "default") --far belt LOD
+						Unit.set_mesh_visibility(unit, 5, false, "default") -- medium tank LOD
+
+						Unit.set_mesh_visibility(unit, 9, false, "default") --medium belt LOD
+						Unit.set_mesh_visibility(unit, 11, false, "default")--close tank LOD gunner
+						Unit.set_mesh_visibility(unit, 12, false, "default")--close tank glow LOD gunner
+						Unit.set_mesh_visibility(unit, 16, false, "default")--close belt LOD gunner
+					end
+				end
+			end
 		end
+	end
 
-		mod.anim_emitters[unit] = AnimEmitter:new(unit, blackboard)
-
-        Unit.set_mesh_visibility(unit, 0, false, "default")--far tank LOD
-        Unit.set_mesh_visibility(unit, 4, false, "default") --far belt LOD
-        Unit.set_mesh_visibility(unit, 5, false, "default") -- medium tank LOD
-
-        Unit.set_mesh_visibility(unit, 9, false, "default") --medium belt LOD
-        Unit.set_mesh_visibility(unit, 11, false, "default")--close tank LOD gunner
-        Unit.set_mesh_visibility(unit, 12, false, "default")--close tank glow LOD gunner
-        Unit.set_mesh_visibility(unit, 16, false, "default")--close belt LOD gunner
-    end
-    return func(self, unit, blackboard, ...)
+	return func(self, world, unit, unit_template_name, extension_init_data)
 end)
 
 
@@ -303,7 +309,9 @@ mod:hook(Unit, "animation_event", function(func, unit, event, ...)
 			if swap_tisch then
 				set_animation_state_machine(unit, swap_tisch.machine)
 				event = swap_tisch.event
-				mod.anim_emitters[unit]:update_animation(unit, event)
+				if mod.anim_emitters[unit] then
+					mod.anim_emitters[unit]:update_animation(unit, event)
+				end
 			elseif not has_animation_event(unit, event) then
 				set_animation_state_machine(unit, "units/beings/enemies/skaven_ratlinggunner/chr_skaven_ratlinggunner")
 			end
@@ -331,3 +339,29 @@ mod:hook(AIInventoryExtension, "_setup_configuration", function (func, self, uni
 
 	return result
 end)
+
+-- these functions are needed so the client can properly spawn in the custom breed with right breed data set
+local unit_go_sync_functions = require("scripts/mods/doomrocket/utils/game_object_initializers_extractors")
+mod:hook(UnitSpawner, 'set_gameobject_initializer_data', function(func, self, initializer_function_table, extraction_function_table, gameobject_context)
+	initializer_function_table = unit_go_sync_functions.initializers
+	extraction_function_table = unit_go_sync_functions.extractors
+	return func(self, initializer_function_table, extraction_function_table, gameobject_context)
+end)
+
+mod:hook(UnitSpawner, 'set_gameobject_to_unit_creator_function', function(func, self, function_table)
+	function_table = unit_go_sync_functions.unit_from_gameobject_creator_func
+	return func(self, function_table)
+end)
+
+
+--stops a crash but needs to be revisted as it borks other things
+-- mod:hook(Unit, 'animation_set_constraint_target', function(func, self, index, value)
+
+-- 	-- print(index)
+-- 	-- print(value)
+
+-- 	local result = func(self, index, value)
+
+-- 	-- return func(self, index, value)
+-- 	return
+-- end)

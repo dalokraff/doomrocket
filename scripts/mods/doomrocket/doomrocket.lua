@@ -43,6 +43,7 @@ mod:dofile("scripts/mods/doomrocket/behavior/nodes/skaven_doomrocket/trees/skave
 mod:dofile("scripts/mods/doomrocket/extensions/doomrocket_aim_template")
 mod:dofile("scripts/mods/doomrocket/extensions/death_reactions")
 mod:dofile("scripts/mods/doomrocket/utils/hooks")
+mod:dofile("scripts/mods/doomrocket/rpc")
 -- -- mod:dofile("scripts/managers/conflict_director/conflict_director")
 
 
