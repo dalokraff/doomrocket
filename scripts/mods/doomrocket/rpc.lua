@@ -1,26 +1,32 @@
 local mod = get_mod("doomrocket")
 
-mod:network_register("rpc_launch_rocket", function(sender, attacker_unit_id, launchpad_unit_id, network_velocity, network_position, network_rotation, network_target_vector)
-
-    -- local launchpad_unit = Managers.state.unit_storage:unit(launchpad_unit_id)
-    -- Unit.set_mesh_visibility(launchpad_unit, "pRocket", false, "default")
+mod:network_register("rpc_launch_rocket", function(sender, go_id, network_velocity, network_target_vector, attacker_unit_id)
+	print(sender)
 
     local attacker_unit = Managers.state.unit_storage:unit(attacker_unit_id)
-
-    local position = AiAnimUtils.position_network_scale(network_position)
-	local rotation = AiAnimUtils.rotation_network_scale(network_rotation)
 	local velocity = AiAnimUtils.velocity_network_scale(network_velocity)
     local target_vector = AiAnimUtils.velocity_network_scale(network_target_vector)
 
-	local unit_name = "units/rocket/SM_Rocket"
+	local breed = Breeds['skaven_doomrocket']
+	local inventory_template = breed.default_inventory_template
+	local inventory_extension = ScriptUnit.extension(attacker_unit, "ai_inventory_system")
+	local ratling_gun_unit = inventory_extension:get_unit(inventory_template)
 
-	local unit_template_name = nil
-	local extension_init_data = {
-	}
+	local projectile_unit = Managers.state.unit_storage:unit(go_id)
 
-	local projectile_unit = Managers.state.unit_spawner:spawn_network_unit(unit_name, unit_template_name, extension_init_data, position, rotation)
 	mod.projectiles[projectile_unit] = ProjectileRocket:new(projectile_unit, attacker_unit, target_vector)
 
-	local actor = Unit.actor(projectile_unit, 0)
-	Actor.add_velocity(actor, velocity)
+	Unit.set_mesh_visibility(ratling_gun_unit, "pRocket", false, "default")
+end)
+
+mod:hook(UnitSpawner, 'spawn_unit_from_game_object', function (func, self, go_id, owner_id, go_template)
+
+	if go_template then
+        if go_template.go_type == 'ai_unit_ratling_gunner' then
+            go_template.go_type = 'ai_unit_doomrocket'
+        end
+
+    end
+
+    return func(self, go_id, owner_id, go_template)
 end)

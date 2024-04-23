@@ -526,6 +526,60 @@ local function ai_default_husk_update(unit, dt, context, t, data)
 	return DeathReactions.IS_DONE
 end
 
+local function ai_default_husk_start(unit, context, t, killing_blow, is_server)
+	local killer_unit = killing_blow[DamageDataIndex.ATTACKER]
+	local damage_type = killing_blow[DamageDataIndex.DAMAGE_TYPE]
+	local locomotion = ScriptUnit.has_extension(unit, "locomotion_system")
+
+	if locomotion then
+		locomotion:set_mover_disable_reason("husk_death_reaction", true)
+		locomotion:set_collision_disabled("husk_death_reaction", true)
+	end
+
+	local owner_unit = AiUtils.get_actual_attacker_unit(killer_unit)
+	local breed = Unit.get_data(unit, "breed")
+
+	if not breed.no_blood then
+		play_screen_space_blood(context.world, unit, owner_unit, killing_blow, damage_type)
+	end
+
+	if ScriptUnit.has_extension(unit, "ai_inventory_system") then
+		local inventory_system = Managers.state.entity:system("ai_inventory_system")
+
+		inventory_system:drop_item(unit)
+	end
+
+	if breed.death_sound_event and not is_hot_join_sync(killing_blow) then
+		local wwise_source, wwise_world = WwiseUtils.make_unit_auto_source(context.world, unit, Unit.node(unit, "c_head"))
+		local dialogue_extension = ScriptUnit.extension(unit, "dialogue_system")
+		local switch_group = dialogue_extension.wwise_voice_switch_group
+
+		if switch_group then
+			local switch_value = dialogue_extension.wwise_voice_switch_value
+
+			WwiseWorld.set_switch(wwise_world, switch_group, switch_value, wwise_source)
+		end
+
+		local playing_id = WwiseWorld.trigger_event(wwise_world, breed.death_sound_event, wwise_source)
+		local hit_reaction_extension = ScriptUnit.has_extension(unit, "hit_reaction_system")
+
+		if hit_reaction_extension then
+			hit_reaction_extension:set_death_sound_event_id(playing_id)
+		end
+	end
+
+	local death_extension = ScriptUnit.extension(unit, "death_system")
+	local data = {
+		breed = breed,
+		finish_time = t + 3,
+		wall_nail_data = death_extension.wall_nail_data,
+	}
+
+	Managers.state.game_mode:ai_killed(unit, owner_unit, data, killing_blow)
+
+	return data, DeathReactions.IS_NOT_DONE
+end
+
 --================================
 -- Custom death reaction templates
 --================================

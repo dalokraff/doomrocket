@@ -35,5 +35,25 @@ actors = [
         ]
         template = "keyframed_no_collision"
     },
-	
+	{
+		enabled = false
+		mass = 0.1
+		name = "throw"
+		node = "pRocket"
+		shapes = [
+			{
+				material = "default"
+				shape = "pRocket"
+				template = "pickup_interact_collision_shape"
+				type = "convex_computed"
+			},
+			{
+				material = "default"
+				shape = "pRocket"
+				template = "projectile_physics"
+				type = "convex_computed"
+			},
+		]
+		template = "projectile"
+	},
 ]

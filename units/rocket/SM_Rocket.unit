@@ -3,23 +3,27 @@ materials = {
 }
 
 data = {
-    unit_template = "destructible_objective_unit"
+    unit_template = "explosive_pickup_projectile_unit"
     health = 1
     damage_cap_per_hit = 5
     hit_reaction = "level_object"
     death_reaction = "sm_rocket"
-    // death_reaction = "unit"
+    in_hand = false
+    fuse_time = 0.1
 
 	mat_slots = {
-        slot1 = "lambert1",
+        slot1 = "lambert3"
+        slot2 = "lambert4"
     }
 	mat_to_use = "units/weapons/player/wpn_emp_sword_02_t1/wpn_emp_sword_02_t1_3p"
 
     colors = {
         slot1 = "textures/default_col"
+        slot2 = "textures/rocket_red"
     }
     normals = {
         slot1 = "textures/default_normal"
+        slot2 = "textures/default_normal"
     }
 
     color_slot = "texture_map_c0ba2942"

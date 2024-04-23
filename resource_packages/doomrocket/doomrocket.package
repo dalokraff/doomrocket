@@ -20,8 +20,12 @@ unit = [
 
 texture = [
   "textures/*"
-] 
+]
 
 // wwise_dep = [
 //   "wwise/*"
 // ]
+
+network_config = [
+	"scripts/mods/doomrocket/utils/*"
+]

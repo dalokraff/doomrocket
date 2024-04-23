@@ -6,15 +6,21 @@ data = {
     unit_template = "interaction_unit"
 
 	mat_slots = {
-        slot1 = "lambert1",
+        slot1 = "lambert2"
+		slot2 = "lambert3"
+        slot3 = "lambert4"
     }
 	mat_to_use = "units/weapons/player/wpn_emp_sword_02_t1/wpn_emp_sword_02_t1_3p"
 
     colors = {
         slot1 = "textures/default_col"
+		slot2 = "textures/default_col"
+		slot3 = "textures/rocket_red"
     }
     normals = {
         slot1 = "textures/default_normal"
+		slot2 = "textures/default_normal"
+		slot3 = "textures/default_normal"
     }
 
     color_slot = "texture_map_c0ba2942"

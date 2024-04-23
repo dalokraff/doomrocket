@@ -1,4 +1,4 @@
-animation_state_machine = "units/bombadier/bombadier"
+// animation_state_machine = "units/bombadier/bombadier"
 materials = {
    Crystal = "materials/green"
 }

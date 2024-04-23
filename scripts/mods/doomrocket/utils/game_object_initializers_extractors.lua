@@ -1,6 +1,5 @@
 local unit_go_sync_functions = require("scripts/network/game_object_initializers_extractors")
 
-
 local function enemy_unit_common_extractor(unit, game_session, game_object_id)
 	local breed_name_id = GameSession.game_object_field(game_session, game_object_id, "breed_name")
 	local breed_name = NetworkLookup.breeds[breed_name_id]
@@ -29,7 +28,7 @@ unit_go_sync_functions.initializers.ai_unit_doomrocket = function(unit, unit_nam
     local side_id = side.side_id
     local data_table = {
         has_teleported = 1,
-        go_type = NetworkLookup.go_types.ai_unit_ratling_gunner,
+        go_type = NetworkLookup.go_types.ai_unit_doomrocket,
         husk_unit = NetworkLookup.husks[unit_name],
         health = ScriptUnit.extension(unit, "health_system"):get_max_health(),
         position = mover and Mover.position(mover) or Unit.local_position(unit, 0),
@@ -41,6 +40,19 @@ unit_go_sync_functions.initializers.ai_unit_doomrocket = function(unit, unit_nam
         aim_target = Vector3.zero(),
         bt_action_name = NetworkLookup.bt_action_names["n/a"],
         side_id = side_id,
+    }
+
+    return data_table
+end
+
+unit_go_sync_functions.initializers.doomrocket_projectile = function (unit, unit_name, unit_template, gameobject_functor_context)
+    local health_extension = ScriptUnit.has_extension(unit, "health_system")
+    local data_table = {
+        go_type = NetworkLookup.go_types.doomrocket_projectile,
+        husk_unit = NetworkLookup.husks[unit_name],
+        position = Unit.local_position(unit, 0),
+        rotation = Unit.local_rotation(unit, 0),
+        health = health_extension:get_max_health(),
     }
 
     return data_table
@@ -96,5 +108,26 @@ unit_go_sync_functions.extractors.ai_unit_doomrocket = function(game_session, ga
 
     return unit_template_name, extension_init_data
 end
+
+unit_go_sync_functions.extractors.doomrocket_projectile = function (game_session, go_id, owner_id, unit, gameobject_functor_context)
+    local health = GameSession.game_object_field(game_session, go_id, "health")
+    local unit_template_name = "doomrocket_projectile"
+    local extension_init_data = {
+        health_system = {
+            health = health,
+        },
+        death_system = {
+            death_reaction_template = "level_object",
+            is_husk = true,
+        },
+        hit_reaction_system = {
+            hit_reaction_template = "level_object",
+            is_husk = true,
+        },
+    }
+
+    return unit_template_name, extension_init_data
+end
+
 
 return unit_go_sync_functions

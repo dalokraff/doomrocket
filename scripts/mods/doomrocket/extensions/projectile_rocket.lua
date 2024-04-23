@@ -51,8 +51,9 @@ ProjectileRocket = class(ProjectileRocket)
 
 ProjectileRocket.init = function (self, unit, attacker_unit, target_pos)
     Managers.package:load("resource_packages/breeds/skaven_warpfire_thrower", "global")
+    self.unit_string = tostring(unit)
     self.unit = unit
-    local actor = Unit.actor(unit, 0)
+    local actor = Unit.actor(unit, "throw")
     self.actor = actor
     self.target_z = target_pos.z
     self.target_y = target_pos.y
@@ -72,7 +73,14 @@ ProjectileRocket.init = function (self, unit, attacker_unit, target_pos)
     self.physics_world = World.physics_world(self.world)
 
     self.wwise_world = Wwise.wwise_world(self.world)
-    self.exhaust_sound_id = WwiseWorld.trigger_event(self.wwise_world, "Play_enemy_warpfire_thrower_shoot",  unit)
+    -- self.exhaust_sound_id = WwiseWorld.trigger_event(self.wwise_world, "Play_enemy_warpfire_thrower_shoot",  unit)
+    -- local wwise_source, wwise_world = WwiseUtils.make_unit_auto_source(self.world, unit)
+    local wwise_source = WwiseWorld.make_auto_source(self.wwise_world, unit)
+    local playing_id = WwiseWorld.trigger_event(self.wwise_world, "Play_enemy_warpfire_thrower_shoot", true, wwise_source)
+    WwiseWorld.set_source_parameter(self.wwise_world, wwise_source, "ratling_gun_shooting_loop_parameter", 0)
+
+    self.wwise_source_id = wwise_source
+    self.exhaust_sound_id = playing_id
 
     self.time_pass = 0
 
@@ -83,27 +91,31 @@ ProjectileRocket.update = function (self, dt)
         self:destroy()
     end
 
-    local vel = velocity(self.actor)
-    local speed = magnitude(vel)
+    if self.actor then
+        local vel = velocity(self.actor)
+        local speed = magnitude(vel)
 
-    local new_direction = vel.x*vel.y*vel.z
-    new_direction = new_direction/math.abs(new_direction)
+        local new_direction = vel.x*vel.y*vel.z
+        new_direction = new_direction/math.abs(new_direction)
 
-    if not self.current_direction then
+        if not self.current_direction then
+            self.current_direction = new_direction
+        end
+
+        self:guide_force(dt)
+        self:straighten_rocket(vel)
+        self:move_particles(self.actor)
+
+        if speed < 4 then
+            self:destroy()
+        end
+
+        self.time_pass = self.time_pass + dt
         self.current_direction = new_direction
-    end
-
-    self:guide_force(dt)
-    self:straighten_rocket(vel)
-    self:move_particles(self.actor)
-
-    if speed < 4 then
+        self.previous_speed = speed
+    elseif not Unit.alive(self.unit) then
         self:destroy()
     end
-
-    self.time_pass = self.time_pass + dt
-    self.current_direction = new_direction
-    self.previous_speed = speed
 end
 
 ProjectileRocket.straighten_rocket = function(self, direction)
@@ -157,29 +169,39 @@ ProjectileRocket.rocket_explode = function(self)
         Managers.state.network.network_transmit:send_rpc_server("rpc_create_explosion", attacker_unit_id, false,
             position, rotation, explosion_template_id, 1, damage_source_id, power_level, false, attacker_unit_id)
 
-        Managers.state.unit_spawner:mark_for_deletion(self.unit)
-	else
-		Managers.state.unit_spawner:mark_for_deletion(self.unit)
+        -- Managers.state.unit_spawner:mark_for_deletion(self.unit)
 	end
 
-    if self.exhaust_id then
-        World.destroy_particles(world, self.exhaust_id)
-    end
-    WwiseWorld.stop_event(self.wwise_world, self.exhaust_sound_id)
+    Unit.set_unit_visibility(self.unit, false)
+    -- Unit.disable_physics(self.unit)
 
     return
 end
 
 ProjectileRocket.destroy = function(self)
+
+    if self.exhaust_sound_id then
+        WwiseWorld.set_source_parameter(self.wwise_world, self.wwise_source_id, "ratling_gun_shooting_loop_parameter", 100)
+        WwiseWorld.trigger_event(self.wwise_world, "player_enemy_warpfire_thrower_shoot_end", self.unit)
+        WwiseWorld.stop_event(self.wwise_world, self.exhaust_sound_id)
+        self.exhaust_sound_id = nil
+        self.wwise_source_id = nil
+    end
+
+
+    if self.exhaust_id then
+        World.destroy_particles(self.world, self.exhaust_id)
+        self.exhaust_id = nil
+    end
+
     if Unit.alive(self.unit) then
         self:rocket_explode()
     end
 
-    mod.projectiles[self.unit] = nil
+    if self.unit then
+        mod.projectiles[self.unit] = nil
+    end
     self.unit = nil
     self.actor = nil
-    self.exhaust_id = nil
-
-
-    return
+    self.unit_string = nil
 end

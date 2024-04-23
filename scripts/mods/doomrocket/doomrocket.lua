@@ -2,6 +2,9 @@ local mod = get_mod("doomrocket")
 -- Your mod code goes here.
 -- https://vmf-docs.verminti.de
 
+-- mod:dofile("scripts/mods/doomrocket/utils/LobbyManager")
+-- Managers.lobby = ModLobbyManager:new()
+
 
 Managers.package:load("resource_packages/breeds/skaven_ratling_gunner", "global")
 -- Managers.package:load("resource_packages/breeds/skaven_warpfire_thrower", "global")
@@ -43,6 +46,7 @@ mod:dofile("scripts/mods/doomrocket/behavior/nodes/skaven_doomrocket/trees/skave
 mod:dofile("scripts/mods/doomrocket/extensions/doomrocket_aim_template")
 mod:dofile("scripts/mods/doomrocket/extensions/death_reactions")
 mod:dofile("scripts/mods/doomrocket/utils/hooks")
+mod:dofile("scripts/mods/doomrocket/utils/GameNetworkManager_utils")
 mod:dofile("scripts/mods/doomrocket/rpc")
 -- -- mod:dofile("scripts/managers/conflict_director/conflict_director")
 
@@ -189,8 +193,10 @@ mod.anim_emitters = {}
 mod.projectiles = {}
 
 function mod.update(dt)
-    for projectile_unit,projectile in pairs(mod.projectiles) do
-		projectile:update(dt)
+    for unit_string,projectile in pairs(mod.projectiles) do
+		if unit_string then
+			projectile:update(dt)
+		end
 	end
 
 	for unit,anim_emitter in pairs(mod.anim_emitters) do

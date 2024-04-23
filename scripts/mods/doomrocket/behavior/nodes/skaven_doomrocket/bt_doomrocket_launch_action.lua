@@ -610,7 +610,7 @@ BTDoomrocketLaunchAction._shoot = function (self, unit, blackboard, data)
 	local impulse_vector = direction_unit_vector*10
 
 	local rotation = Unit.local_rotation(unit, 0)
-	local launchpad_unit_id = Managers.state.unit_storage:go_id(data.ratling_gun_unit)
+	-- local rocket_launcher_id = Managers.state.unit_storage:go_id(data.ratling_gun_unit)
 	local attacker_unit_id = Managers.state.unit_storage:go_id(unit)
 
 	local network_position = AiAnimUtils.position_network_scale(from_position, true)
@@ -618,7 +618,34 @@ BTDoomrocketLaunchAction._shoot = function (self, unit, blackboard, data)
 	local network_velocity = AiAnimUtils.velocity_network_scale(impulse_vector, true)
 	local network_target_vector =  AiAnimUtils.velocity_network_scale(target_vector, true)
 
-	mod:network_send("rpc_launch_rocket","all", attacker_unit_id, launchpad_unit_id, network_velocity, network_position, network_rotation, network_target_vector)
+	local unit_name = "units/rocket/SM_Rocket"
+	local unit_template_name = "explosive_pickup_projectile_unit"
+	local extension_init_data = {
+		projectile_locomotion_system = {
+			network_position = network_position,
+			network_rotation = network_rotation,
+			network_velocity = network_velocity,
+			network_angular_velocity = {network_velocity[1], network_velocity[2], 0}
+		},
+		pickup_system = {
+			pickup_name = "explosive_barrel",
+			has_physics = true,
+			spawn_type = "thrown",
+		},
+		death_system = {
+			in_hand = false,
+			item_name = "explosive_barrel",
+		},
+	}
+	local projectile_unit, go_id = Managers.state.unit_spawner:spawn_network_unit(unit_name, unit_template_name, extension_init_data, from_position, rotation)
+	mod.projectiles[projectile_unit] = ProjectileRocket:new(projectile_unit, unit, target_vector)
+	-- local actor = Unit.actor(projectile_unit, 0)
+	-- Actor.add_velocity(actor, impulse_vector)
+
+	Unit.set_mesh_visibility(data.ratling_gun_unit, "pRocket", false, "default")
+
+	mod:network_send("rpc_launch_rocket","others", go_id, network_velocity, network_target_vector, attacker_unit_id)
+
 end
 
 BTDoomrocketLaunchAction._create_bot_threat_box = function (self, unit, attack_data, duration)
@@ -650,3 +677,10 @@ return
 -- mod:echo(breed)
 -- local actor = Unit.actor(unit, 0)
 -- Actor.add_impulse(actor, Vector3(10, 0, 5))
+
+-- local player = Managers.player:local_player()
+-- local player_unit = player.player_unit
+-- local position = Unit.local_position(player_unit, 0)
+-- -- mod:echo(position)
+-- local rotation = Unit.local_rotation(player_unit, 0)
+-- local projectile_unit, go_id = Managers.state.unit_spawner:spawn_network_unit("units/beings/enemies/skaven_ratlinggunner/chr_skaven_ratlinggunner", unit_template_name, {}, position, rotation)

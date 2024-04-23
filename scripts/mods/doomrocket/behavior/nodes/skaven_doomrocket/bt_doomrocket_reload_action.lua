@@ -33,7 +33,7 @@ BTDoomrocketReloadAction.enter = function (self, unit, blackboard, t)
 		return
 	end
 
-	data.wind_up_timer = AiUtils.random(action.wind_up_time[1], action.wind_up_time[2])
+	data.wind_up_timer = AiUtils.random(3, 5) --this sets doom rocket windup time
 	data.wind_up_time = data.wind_up_timer
 	data.constraint_target = data.constraint_target or Unit.animation_find_constraint_target(unit, "aim_target")
 	blackboard.attack_pattern_data = data
