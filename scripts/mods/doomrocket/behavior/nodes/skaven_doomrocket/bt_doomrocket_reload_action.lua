@@ -1,3 +1,4 @@
+local mod = get_mod("doomrocket")
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTDoomrocketReloadAction = class(BTDoomrocketReloadAction, BTNode)
@@ -140,8 +141,11 @@ BTDoomrocketReloadAction.run = function (self, unit, blackboard, t, dt)
 		AiUtils.temp_anim_event(unit, "wind_up_loop", data.wind_up_timer)
 	end
 
-	if data.wind_up_timer < 1 then
+	if data.wind_up_timer < 1  and (not blackboard.reloaded_rocket) then
+		local rat_go_id = Managers.state.unit_storage:go_id(unit)
 		Unit.set_mesh_visibility(data.ratling_gun_unit, "pRocket", true, "default")
+		mod:network_send("rpc_reload_rocket","others", rat_go_id)
+		blackboard.reloaded_rocket = true
 	end
 
     if data.wind_up_timer < 0 then

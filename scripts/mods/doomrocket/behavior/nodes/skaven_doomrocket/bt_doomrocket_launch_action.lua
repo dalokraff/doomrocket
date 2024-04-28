@@ -628,13 +628,13 @@ BTDoomrocketLaunchAction._shoot = function (self, unit, blackboard, data)
 			network_angular_velocity = {network_velocity[1], network_velocity[2], 0}
 		},
 		pickup_system = {
-			pickup_name = "explosive_barrel",
+			pickup_name = "doom_rocket",
 			has_physics = true,
 			spawn_type = "thrown",
 		},
 		death_system = {
 			in_hand = false,
-			item_name = "explosive_barrel",
+			item_name = "doom_rocket",
 		},
 	}
 	local projectile_unit, go_id = Managers.state.unit_spawner:spawn_network_unit(unit_name, unit_template_name, extension_init_data, from_position, rotation)
@@ -643,7 +643,7 @@ BTDoomrocketLaunchAction._shoot = function (self, unit, blackboard, data)
 	-- Actor.add_velocity(actor, impulse_vector)
 
 	Unit.set_mesh_visibility(data.ratling_gun_unit, "pRocket", false, "default")
-
+	blackboard.reloaded_rocket = false
 	mod:network_send("rpc_launch_rocket","others", go_id, network_velocity, network_target_vector, attacker_unit_id)
 
 end

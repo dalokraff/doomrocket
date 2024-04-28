@@ -200,6 +200,7 @@ ProjectileRocket.destroy = function(self)
 
     if self.unit then
         mod.projectiles[self.unit] = nil
+        Unit.destroy_actor(self.unit, 'pRocket')
     end
     self.unit = nil
     self.actor = nil

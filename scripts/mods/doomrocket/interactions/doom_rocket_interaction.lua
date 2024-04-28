@@ -28,13 +28,11 @@ end
 
 InteractionDefinitions.doom_rocket.client.can_interact = function (interactor_unit, interactable_unit, data, config)
 
-    -- return (Unit.alive(interactable_unit) and Unit.alive(interactor_unit))
     return false
 end
 
 InteractionDefinitions.doom_rocket.server.can_interact = function (interactor_unit, interactable_unit)
 
-    -- return (Unit.alive(interactable_unit) and Unit.alive(interactor_unit))
     return false
 end
 

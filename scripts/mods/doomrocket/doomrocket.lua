@@ -11,6 +11,7 @@ Managers.package:load("resource_packages/breeds/skaven_ratling_gunner", "global"
 
 mod:dofile("scripts/mods/doomrocket/breeds/skaven_doomrocket")
 mod:dofile("scripts/mods/doomrocket/interactions/doom_rocket_interaction")
+mod:dofile("scripts/mods/doomrocket/interactions/doom_rocket_pickup")
 mod:dofile("scripts/mods/doomrocket/extensions/projectile_rocket")
 mod:dofile("scripts/mods/doomrocket/extensions/anim_emitter")
 local threat_values = {}

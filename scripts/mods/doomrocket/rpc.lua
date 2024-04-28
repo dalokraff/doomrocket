@@ -30,3 +30,16 @@ mod:hook(UnitSpawner, 'spawn_unit_from_game_object', function (func, self, go_id
 
     return func(self, go_id, owner_id, go_template)
 end)
+
+mod:network_register("rpc_reload_rocket", function(sender, rat_go_id)
+	print(sender)
+
+    local attacker_unit = Managers.state.unit_storage:unit(rat_go_id)
+
+	local breed = Breeds['skaven_doomrocket']
+	local inventory_template = breed.default_inventory_template
+	local inventory_extension = ScriptUnit.extension(attacker_unit, "ai_inventory_system")
+	local ratling_gun_unit = inventory_extension:get_unit(inventory_template)
+
+	Unit.set_mesh_visibility(ratling_gun_unit, "pRocket", true, "default")
+end)

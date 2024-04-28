@@ -398,3 +398,13 @@ end)
 -- 	network_options.lobby_port = lobby_port
 -- 	self._network_options = network_options
 -- end)
+
+mod:hook(PickupUnitExtension, 'init', function(func, self, extension_init_context, unit, extension_init_data)
+
+	local interaction_type = Unit.get_data(unit, "interaction_data", "interaction_type")
+	local result = func(self, extension_init_context, unit, extension_init_data)
+	if interaction_type == "doom_rocket" then
+		Unit.set_data(unit, "interaction_data", "interaction_type", "doom_rocket")
+	end
+	return result
+end)
