@@ -268,3 +268,89 @@ mod:hook(ConflictDirector, 'refresh_conflict_director_patches', function (func, 
 	end
 	return result
 end)
+
+-- for setting_name, settings in pairs(SpecialsSettings) do
+-- 	if settings.breeds then
+-- 		for index, breed in ipairs(settings.breeds) do
+-- 			mod:echo(tostring(index).." "..tostring(breed))
+-- 		end
+-- 	end
+-- end
+
+-- Managers.state.conflict.specials_pacing
+
+-- for index, breed in ipairs(SpecialsSettings.skaven_light.breeds) do
+-- 	mod:echo(tostring(index).." "..tostring(breed))
+-- end
+
+-- for setting_name, settings in pairs(SpecialsSettings) do
+-- 	if settings.breeds then
+-- 		settings.breeds[#settings.breeds + 1] = "skaven_doomrocket"
+-- 	end
+-- 	if settings.difficulty_overrides then
+-- 		for diff, diff_settings in pairs(settings.difficulty_overrides) do
+-- 			if diff_settings.breeds then
+-- 				diff_settings.breeds[#diff_settings.breeds + 1] = "skaven_doomrocket"
+-- 			end
+-- 		end
+-- 	end
+-- end
+
+-- for k,v in pairs(CurrentPacing) do
+-- 	mod:echo(tostring(k).."	"..tostring(v))
+-- end
+-- mod:echo(CurrentPacing)
+-- mod:echo(Managers.state.conflict.current_conflict_settings)
+-- mod:echo(Managers.level_transition_handler:get_current_conflict_director())
+
+
+for k,v in pairs(CurrentSpecialsSettings.breeds) do
+	mod:echo(tostring(k).."	"..tostring(v))
+end
+
+-- CurrentSpecialsSettings.breeds[#CurrentSpecialsSettings + 1] = 'skaven_doomrocket'
+
+-- mod:hook(SpecialsPacing, 'update', function(func, self, t, alive_specials, specials_population, player_positions)
+-- 	-- for k,v in pairs(self._specials_spawn_queue) do
+-- 	-- 	mod:echo(tostring(k).."	"..tostring(v))
+-- 	-- end
+-- 	return func(self, t, alive_specials, specials_population, player_positions)
+-- end)
+
+-- local difficulty, difficulty_tweak = Managers.state.difficulty:get_difficulty()
+-- local fallback_difficulty = Managers.state.difficulty.fallback_difficulty
+-- local composition_difficulty = DifficultyTweak.converters.composition(difficulty, difficulty_tweak)
+-- local director = ConflictDirectors[Managers.state.conflict.current_conflict_settings]
+-- -- for k,v in pairs(director.specials) do
+-- -- 	mod:echo(tostring(k).."	"..tostring(v))
+-- -- end
+
+-- -- local thinger = ConflictUtils.patch_settings_with_difficulty(table.clone(director.specials), composition_difficulty, fallback_difficulty)
+-- local source_settings = table.clone(director.specials)
+-- local overrides = source_settings.difficulty_overrides
+-- local override_settings = overrides and (overrides[difficulty] or overrides[fallback_difficulty])
+
+-- if override_settings then
+-- 	for key, _ in pairs(source_settings) do
+-- 		if key ~= "difficulty_overrides" then
+-- 			source_settings[key] = override_settings[key] or source_settings[key]
+-- 			mod:echo('not key')
+-- 		end
+-- 	end
+
+-- 	source_settings.difficulty_overrides = nil
+
+-- 	-- return source_settings
+-- 	mod:echo('this branch')
+-- else
+-- 	-- return source_settings
+-- 	mod:echo('that branch')
+-- end
+
+-- CurrentSpecialsSettings.breeds[#CurrentSpecialsSettings + 1] = 'skaven_doomrocket'
+-- Managers.state.conflict:refresh_conflict_director_patches()
+
+-- mod:hook(ConflictUtils, 'patch_settings_with_difficulty', function(func, source_settings, difficulty, fallback_difficulty)
+
+-- 	return func(source_settings, difficulty, fallback_difficulty)
+-- end)
