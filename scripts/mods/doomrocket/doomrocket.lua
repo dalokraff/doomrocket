@@ -249,3 +249,22 @@ mod:command("doom", "", function()
 	end
 	mod:chat_broadcast("Doom:	"..tostring(mod.doom))
 end)
+
+mod:hook(ConflictDirector, 'refresh_conflict_director_patches', function (func, self)
+	local result = func(self)
+	if mod.doom then
+		if CurrentSpecialsSettings.breeds then
+			local has_doomrockets = false
+			for k,v in pairs(CurrentSpecialsSettings.breeds) do
+				if k == 'skaven_doomrocket' or v == 'skaven_doomrocket' then
+					has_doomrockets = true
+				end
+			end
+
+			if not has_doomrockets then
+				CurrentSpecialsSettings.breeds[#CurrentSpecialsSettings + 1] = 'skaven_doomrocket'
+			end
+		end
+	end
+	return result
+end)
