@@ -84,6 +84,8 @@ ProjectileRocket.init = function (self, unit, attacker_unit, target_pos)
 
     self.time_pass = 0
 
+    self.attacker_goid = Managers.state.unit_storage:go_id(self.attacker_unit)
+
 end
 
 ProjectileRocket.update = function (self, dt)
@@ -153,14 +155,15 @@ ProjectileRocket.rocket_explode = function(self)
     local actor = self.actor
     local position = Actor.position(actor)
     local rotation = Actor.rotation(actor)
-    local attacker_unit_id = Managers.state.unit_storage:go_id(self.attacker_unit)
+    local attacker_unit_id = self.attacker_goid
     local explosion_template_name = "doomrocket_explosion"
     local explosion_template_id = NetworkLookup.explosion_templates[explosion_template_name]
     local explosion_template = ExplosionTemplates[explosion_template_name]
     local damage_source = "skaven_doomrocket"
     local damage_source_id = NetworkLookup.damage_sources[damage_source]
     local is_husk = true
-    local power_level = 1000
+    -- local power_level = 1000
+    local power_level = 700
     local world = self.world
 
     if Managers.player.is_server then
