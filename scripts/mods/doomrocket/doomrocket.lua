@@ -71,6 +71,7 @@ ExplosionTemplates["doomrocket_explosion"] = {
 		dont_rotate_fx = true,
 		allow_friendly_fire_override = true,
 		player_push_speed = 15,
+		ai_friendly_fire = true,
 		difficulty_power_level = {
 			easy = {
 				power_level_glance = 400,
@@ -104,13 +105,6 @@ ExplosionTemplates["doomrocket_explosion"] = {
 				power_level_glance = 400,
 				power_level = 800
 			}
-		},
-		camera_effect = {
-			near_distance = 5,
-			near_scale = 1,
-			shake_name = "frag_grenade_explosion",
-			far_scale = 0.25,
-			far_distance = 30
 		},
 	}
 }

@@ -151,6 +151,8 @@ ProjectileRocket.update_sounds = function(self)
 
 end
 
+-- danger level similar to gas rat
+-- damage of 1000 is too high
 ProjectileRocket.rocket_explode = function(self)
     local actor = self.actor
     local position = Actor.position(actor)
