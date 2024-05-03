@@ -591,7 +591,7 @@ DeathReactions.templates.sm_rocket = {
 		start = function (unit, context, t, killing_blow, is_server)
 			rocket_projectile = mod.projectiles[unit]
 			if rocket_projectile then
-				rocket_projectile:destroy()
+				rocket_projectile:rocket_explode()
 			end
 		end,
 		update = function (unit, dt, context, t, data)

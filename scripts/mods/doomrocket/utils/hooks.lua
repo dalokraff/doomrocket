@@ -408,3 +408,18 @@ mod:hook(PickupUnitExtension, 'init', function(func, self, extension_init_contex
 	end
 	return result
 end)
+
+
+--for running projectile_rocket cleanup code only when rocket is marked for deletion
+mod:hook(GrowQueue, 'pop_first', function(func, self)
+
+	local unit = func(self)
+	if unit then
+		local prj_rckt = mod.projectiles[unit]
+		if prj_rckt then
+			prj_rckt:destroy()
+		end
+	end
+
+	return unit
+end)

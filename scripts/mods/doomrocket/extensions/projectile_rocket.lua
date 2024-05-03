@@ -86,14 +86,16 @@ ProjectileRocket.init = function (self, unit, attacker_unit, target_pos)
 
     self.attacker_goid = Managers.state.unit_storage:go_id(self.attacker_unit)
 
+    self.exploded = false
+
 end
 
 ProjectileRocket.update = function (self, dt)
     if not Unit.alive(self.unit) then
-        self:destroy()
+        self:rocket_explode()
     end
 
-    if self.actor then
+    if self.actor and not self.exploded then
         local vel = velocity(self.actor)
         local speed = magnitude(vel)
 
@@ -109,14 +111,12 @@ ProjectileRocket.update = function (self, dt)
         self:move_particles(self.actor)
 
         if speed < 4 then
-            self:destroy()
+            self:rocket_explode()
         end
 
         self.time_pass = self.time_pass + dt
         self.current_direction = new_direction
         self.previous_speed = speed
-    elseif not Unit.alive(self.unit) then
-        self:destroy()
     end
 end
 
@@ -154,33 +154,34 @@ end
 -- danger level similar to gas rat
 -- damage of 1000 is too high
 ProjectileRocket.rocket_explode = function(self)
-    local actor = self.actor
-    local position = Actor.position(actor)
-    local rotation = Actor.rotation(actor)
-    local attacker_unit_id = self.attacker_goid
-    local explosion_template_name = "doomrocket_explosion"
-    local explosion_template_id = NetworkLookup.explosion_templates[explosion_template_name]
-    local explosion_template = ExplosionTemplates[explosion_template_name]
-    local damage_source = "skaven_doomrocket"
-    local damage_source_id = NetworkLookup.damage_sources[damage_source]
-    local is_husk = true
-    -- local power_level = 1000
-    local power_level = 700
-    local world = self.world
+    if Managers.player.is_server and not self.exploded then
+        local actor = self.actor
+        local position = Actor.position(actor)
+        local rotation = Actor.rotation(actor)
+        local attacker_unit_id = self.attacker_goid
+        local explosion_template_name = "doomrocket_explosion"
+        local explosion_template_id = NetworkLookup.explosion_templates[explosion_template_name]
+        local explosion_template = ExplosionTemplates[explosion_template_name]
+        local damage_source = "skaven_doomrocket"
+        local damage_source_id = NetworkLookup.damage_sources[damage_source]
+        local is_husk = true
+        -- local power_level = 1000
+        local power_level = 700
+        local world = self.world
 
-    if Managers.player.is_server then
+
 		Managers.state.network.network_transmit:send_rpc_clients("rpc_create_explosion", attacker_unit_id, false,
             position, rotation, explosion_template_id, 1, damage_source_id, power_level, false, attacker_unit_id)
         Managers.state.network.network_transmit:send_rpc_server("rpc_create_explosion", attacker_unit_id, false,
             position, rotation, explosion_template_id, 1, damage_source_id, power_level, false, attacker_unit_id)
 
-        -- Managers.state.unit_spawner:mark_for_deletion(self.unit)
+        Managers.state.unit_spawner:mark_for_deletion(self.unit)
+
+        self.exploded = true
 	end
 
-    Unit.set_unit_visibility(self.unit, false)
+    -- Unit.set_unit_visibility(self.unit, false)
     -- Unit.disable_physics(self.unit)
-
-    return
 end
 
 ProjectileRocket.destroy = function(self)
@@ -193,14 +194,9 @@ ProjectileRocket.destroy = function(self)
         self.wwise_source_id = nil
     end
 
-
     if self.exhaust_id then
         World.destroy_particles(self.world, self.exhaust_id)
         self.exhaust_id = nil
-    end
-
-    if Unit.alive(self.unit) then
-        self:rocket_explode()
     end
 
     if self.unit then
@@ -210,4 +206,5 @@ ProjectileRocket.destroy = function(self)
     self.unit = nil
     self.actor = nil
     self.unit_string = nil
+    self.exploded = nil
 end
