@@ -52,7 +52,8 @@ mod:dofile("scripts/mods/doomrocket/rpc")
 -- -- mod:dofile("scripts/managers/conflict_director/conflict_director")
 
 
-
+--adds doomrocket killfeed icon
+UISettings.breed_textures['skaven_doomrocket'] = 'unit_frame_portrait_enemy_doomrocket'
 
 --setup rocket explosion template
 ExplosionTemplates["doomrocket_explosion"] = {
@@ -298,9 +299,9 @@ end)
 -- mod:echo(Managers.level_transition_handler:get_current_conflict_director())
 
 
-for k,v in pairs(CurrentSpecialsSettings.breeds) do
-	mod:echo(tostring(k).."	"..tostring(v))
-end
+-- for k,v in pairs(CurrentSpecialsSettings.breeds) do
+-- 	mod:echo(tostring(k).."	"..tostring(v))
+-- end
 
 -- CurrentSpecialsSettings.breeds[#CurrentSpecialsSettings + 1] = 'skaven_doomrocket'
 
