@@ -106,8 +106,6 @@ mod:hook(ConflictDirector, "update_spawn_queue", function(func, self, t)
 	local breed = d[1]
 	local breed_name = breed.name
 
-    -- mod:echo(enemy_package_loader.breed_loaded_on_all_peers[breed_name])
-
 	while not enemy_package_loader.breed_loaded_on_all_peers[breed_name] and (breed_name ~= breeds_to_force_spawn[breed_name]) do
 		first_spawn_index = first_spawn_index + 1
 
@@ -126,17 +124,13 @@ mod:hook(ConflictDirector, "update_spawn_queue", function(func, self, t)
 		local breed = BLACKBOARDS[unit].breed
 		local go_id = Managers.state.unit_storage:go_id(unit)
 
-		self:_post_spawn_unit(unit, go_id, breed, d[2]:unbox(), d[4], d[5], d[7], d[6])
+		self:_post_spawn_unit(unit, go_id, breed, d[2]:unbox(), d[4], d[5], d[7], d[6], d[10])
 	else
 		unit = self:_spawn_unit(d[1], d[2]:unbox(), d[3]:unbox(), d[4], d[5], d[6], d[7], d[8], d[10])
-        -- if Unit.has_data(unit, "breed") then
-        --     for k,v in pairs(Unit.get_data(unit, "breed")) do
-        --         mod:echo(tostring(k)..":     "..tostring(v))
-        --     end
-        -- end
 	end
 
 	self.num_queued_spawn_by_breed[breed_name] = self.num_queued_spawn_by_breed[breed_name] - 1
+
 	local unit_data = d[9]
 
 	if unit_data then
@@ -145,6 +139,7 @@ mod:hook(ConflictDirector, "update_spawn_queue", function(func, self, t)
 
 	if first_spawn_index ~= self.first_spawn_index then
 		local swapee = self.spawn_queue[first_spawn_index]
+
 		self.spawn_queue[first_spawn_index] = self.spawn_queue[self.first_spawn_index]
 		self.spawn_queue[self.first_spawn_index] = swapee
 	end
