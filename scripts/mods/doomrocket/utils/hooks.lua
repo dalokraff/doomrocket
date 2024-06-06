@@ -418,3 +418,20 @@ mod:hook(GrowQueue, 'pop_first', function(func, self)
 
 	return unit
 end)
+
+-- Fatshark added a
+-- assert(self.is_server, "[HealthTriggerSystem] Clients should not hold health trigger extensions")
+-- line for some reason, no idea why. This just origin hooks it so it don't do that
+mod:hook(HealthTriggerSystem,'extensions_ready', function (func, self, world, unit, extension_name)
+
+	local extension = self.unit_extensions[unit]
+
+	extension.health_extension = ScriptUnit.extension(unit, "health_system")
+
+	assert(extension.health_extension)
+
+	extension.last_health_percent = extension.health_extension:current_health_percent()
+	extension.last_health_tick_percent = extension.health_extension:current_health_percent()
+	extension.dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
+	extension.tick_time = 0
+end)
