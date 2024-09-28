@@ -322,9 +322,28 @@ mod:hook(AIInventoryExtension, "_setup_configuration", function (func, self, uni
 
 	local outfit_units = self.inventory_item_outfit_units
 
+	local is_mat_aval = Application.can_get('material', "     GvOtsyNy1'")
+
 	for i, outfit_unit in ipairs(outfit_units) do
-		if Unit.get_data(outfit_unit, "unit_name") == "units/beings/enemies/skaven_plague_monk/chr_skaven_plague_monk" then
-			Unit.disable_animation_state_machine(outfit_unit)
+		if Unit.alive(outfit_unit) then
+			local outfit_unit_name = Unit.get_data(outfit_unit, "unit_name")
+			if outfit_unit_name == "units/beings/enemies/skaven_plague_monk/chr_skaven_plague_monk" then
+				Unit.disable_animation_state_machine(outfit_unit)
+			elseif (outfit_unit_name == "units/bombadier/Backpack") and is_mat_aval then
+				Unit.set_material(outfit_unit, 'lambert1', "     GvOtsyNy1'")
+			end
+		end
+	end
+
+	local weapon_units = self.inventory_item_weapon_units
+
+	for i, weapon_unit in ipairs(weapon_units) do
+		if Unit.alive(weapon_unit) then
+			local weapon_unit_name = Unit.get_data(weapon_unit, "unit_name")
+			if (weapon_unit_name == "units/rocket/pRocketLauncher") and is_mat_aval then
+				Unit.set_material(weapon_unit, 'lambert2', "     GvOtsyNy1'")
+				Unit.set_material(weapon_unit, 'lambert3', "     GvOtsyNy1'")
+			end
 		end
 	end
 
